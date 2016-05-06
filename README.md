@@ -1,1 +1,1 @@
-Waffle.io tasks: [![Stories in Ready](https://badge.waffle.io/wifimapping/app.png?label=ready&title=Ready)](http://waffle.io/wifimapping/app)
+[![Build Status](https://travis-ci.org/wifimapping/server.svg?branch=master)](https://travis-ci.org/wifimapping/server) [![Stories in Ready](https://badge.waffle.io/wifimapping/app.png?label=ready&title=Ready)](http://waffle.io/wifimapping/app)
