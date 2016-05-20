@@ -36,7 +36,7 @@
 
 ### Part 1: Setting up Directories
 
-ssh /<username>@capstone.cloudapp.net
+ssh \<username>@capstone.cloudapp.net
 
 - *Set up Directory in capstone.cloudapp.net /var/www/2016/*
 
