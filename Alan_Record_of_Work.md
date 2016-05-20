@@ -1,30 +1,30 @@
-# Record of Work sensitive details have been abstracted, but can be viewed on [this private google doc]()
+# Record of Work sensitive details have been abstracted, but can be viewed on [this private google doc](https://docs.google.com/a/nyu.edu/document/d/1U-lNzP9veLojQvmOC0riIdTdyrbDZKYQMqo8AeE3nqM/)
 
 ## Synopsis:
 
-Part 1: Setting up Directories
+### Part 1: Setting up Directories
  - Set up Directory in capstone.cloudapp.net /var/www/2016/
  - Cloned 'Server' Repository into this Directory
 
-Part 2: PostGreSQL DataBase installation on Django using [this resource](https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-django-application-on-ubuntu-14-04):
+### Part 2: PostGreSQL DataBase installation on Django using [this resource](https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-django-application-on-ubuntu-14-04):
  - Installed PostGreSQL on Azure server
  - Created PostGres DataBase, User and Password
  - Stored Authentication infromation locally in password.py file in Cloned Directory
 
- Part 3: Django modifications
+ ### Part 3: Django modifications
  - Created New Branch 'Django_PostGres'
  - Editted Code to make new Django server and new PostGres DB and point Django to it 
  (modified last year's code to do this)
  - Merged Branch back into original after review
- - Ran Migrate comands on Azure Server to create new Django Server which points to PostGresDB
+ - Ran Migrate commands on Azure Server to create new Django Server which points to PostGresDB
 
- Part 4: Database Dump
+ ### Part 4: Database Dump
  - Dumped all data from old DB into new DB
 
- Part 5: Test to see if everything fts in well
+ ### Part 5: Test to see if everything fits in well
  -Still undone
 
- Part 6: Point Apache server to new Django Server
+ ### Part 6: Point Apache server to new Django Server
  -Still undone
 
 
@@ -84,7 +84,7 @@ CREATE DATABASE <databasename>;
 
 CREATE USER <username> WITH PASSWORD <password>;
 
-*Alter a few roles*
+*Tweak user’s properties*
 
 ALTER ROLE <username> SET client_encoding TO 'utf8';
 ALTER ROLE <username> SET default_transaction_isolation TO 'read committed';
@@ -115,29 +115,17 @@ cat "DB_USER = '<username>' ">>password.py
 cat "DB_PASS = '<password>' ">>password.py
 
 
+# From Here onwards, I'm still working on it... will update the progress on this readme as I complete work. THe google doc is like;y to be updated more frequently, simply because its easier to do so, (and fonts render immediately and spell chaecks are available)
 
 
+### Part 3: Django modifications using [this resource](http://tutorial.djangogirls.org/en/django/)
 
-### Part 3: Django modifications
-
- {*- Created New Branch 'Django_PostGres'*
+ *- Created New Branch 'Django_PostGres'*
 
  git branch Django_PostGres
  git checkout Django_PostGres
 
-} Pushing the branch after setting the upstream didnt work. not did pushing a change without branching.
 
-
-*Instead, forked server repository and cloned it into a local directory:*
-
-git clone https://github.com/AlanPolson/server.git
-cd server
-sublime Alan_Record_of_Work.md
-git add Alan_Record_of_Work.md
-git commit -m "Added Record of work"
-git push
-
-Issue pull request on GitHub
 
  *- Editted Code to make new Django server and new PostGres DB and point Django to it* 
 
@@ -145,11 +133,13 @@ editted settings.py file and
 
 
 
- *- Merged Branch back into original after review* 
+ *- Merged Branch back into original after review*
+
+git 
 
 
 
- *- Ran Migrate comands on Azure Server to create new Django Server which points to PostGresDB*
+ *- Ran Migrate commands on Azure Server to create new Django Server which points to PostGresDB*
 
 cd 
 
@@ -160,5 +150,6 @@ python manage.py migrate
 
 
 
- Part 4: Database Dump
+ ### Part 4: Database Dump
  - Dumped all data from old DB into new DB
+ (Still to do)
