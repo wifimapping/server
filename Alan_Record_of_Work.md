@@ -120,7 +120,7 @@ cat "DB_USER = '\<username>' ">>password.py
 cat "DB_PASS = '\<password>' ">>password.py
 
 
-# From Here onwards, I'm still working on it... will update the progress on this readme as I complete work. The google doc is likely to be updated more frequently, simply because its easier to do so, (and fonts render immediately and spell chaecks are available)
+# From Here onwards, I'm still working on it... will update the progress on this readme as I complete work. The google doc is likely to be updated more frequently, simply because its easier to do so, (and fonts render immediately and spell checks are available)
 
 
 ### Part 3: Django modifications using [this resource](http://tutorial.djangogirls.org/en/django/)
