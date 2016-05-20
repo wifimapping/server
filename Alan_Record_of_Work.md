@@ -79,23 +79,23 @@ psql
 
 *Create DataBase*
 
-CREATE DATABASE <databasename>; 
+CREATE DATABASE \<databasename>; 
 
 *Create Username and Password*
 
-CREATE USER <username> WITH PASSWORD <password>;
+CREATE USER \<username> WITH PASSWORD \<password>;
 
 *Tweak user’s properties*
 
-ALTER ROLE <username> SET client_encoding TO 'utf8';
+ALTER ROLE \<username> SET client_encoding TO 'utf8';
 
-ALTER ROLE <username> SET default_transaction_isolation TO 'read committed';
+ALTER ROLE \<username> SET default_transaction_isolation TO 'read committed';
 
-ALTER ROLE <username> SET timezone TO 'America/New_York';
+ALTER ROLE \<username> SET timezone TO 'America/New_York';
 
 *Give all privileges to user*
 
-GRANT ALL PRIVILEGES ON DATABASE <databasename> TO <username>;
+GRANT ALL PRIVILEGES ON DATABASE \<databasename> TO \<username>;
 
 *Exit sql prompt*
 
@@ -113,11 +113,11 @@ exit
 
 cd /var/www/2016/server/cusp_sonyc_wifi
 
-cat "DB_NAME = '<databasename>' ">password.py
+cat "DB_NAME = '\<databasename>' ">password.py
 
-cat "DB_USER = '<username>' ">>password.py
+cat "DB_USER = '\<username>' ">>password.py
 
-cat "DB_PASS = '<password>' ">>password.py
+cat "DB_PASS = '\<password>' ">>password.py
 
 
 # From Here onwards, I'm still working on it... will update the progress on this readme as I complete work. The google doc is like;y to be updated more frequently, simply because its easier to do so, (and fonts render immediately and spell chaecks are available)
