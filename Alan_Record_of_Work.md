@@ -3,7 +3,7 @@
 ## Synopsis:
 
 ### Part 1: Setting up Directories
- - Set up Directory in capstone.cloudapp.net /var/www/2016/
+ - Set up Directory in capstone.cloudapp.net in /var/www/2016/
  - Cloned 'Server' Repository into this Directory
 
 ### Part 2: PostGreSQL DataBase installation on Django using [this resource](https://www.digitalocean.com/community/tutorials/how-to-use-postgresql-with-your-django-application-on-ubuntu-14-04):
@@ -14,6 +14,7 @@
  ### Part 3: Django modifications
  - Created New Branch 'Django_PostGres'
  - Editted Code to make new Django server and new PostGres DB and point Django to it 
+ 
  (modified last year's code to do this)
  - Merged Branch back into original after review
  - Ran Migrate commands on Azure Server to create new Django Server which points to PostGresDB
@@ -35,13 +36,13 @@
 
 ### Part 1: Setting up Directories
 
-ssh <username>@capstone.cloudapp.net
+ssh /<username>@capstone.cloudapp.net
 
-*- Set up Directory in capstone.cloudapp.net /var/www/2016/*
+- *Set up Directory in capstone.cloudapp.net /var/www/2016/*
 
  sudo mkdir /var/www/2016
 
-*- Clone 'Server' Repository into this Directory*
+- *Clone 'Server' Repository into this Directory*
 
 cd /var/www/2016
 sudo git clone https://github.com/wifimapping/server.git
@@ -51,7 +52,7 @@ sudo git clone https://github.com/wifimapping/server.git
 
 
 
-### Part 2: PostGreSQL DataBase installation on Django**
+### Part 2: PostGreSQL DataBase installation on Django
 
 
 
@@ -87,7 +88,9 @@ CREATE USER <username> WITH PASSWORD <password>;
 *Tweak user’s properties*
 
 ALTER ROLE <username> SET client_encoding TO 'utf8';
+
 ALTER ROLE <username> SET default_transaction_isolation TO 'read committed';
+
 ALTER ROLE <username> SET timezone TO 'America/New_York';
 
 *Give all privileges to user*
@@ -106,47 +109,47 @@ GRANT ALL PRIVILEGES ON DATABASE <databasename> TO <username>;
 
 exit
 
-#Enter server Repo and create password authentication file*
+*Enter server Repo and create password authentication file*
 
 cd /var/www/2016/server/cusp_sonyc_wifi
 
 cat "DB_NAME = '<databasename>' ">password.py
+
 cat "DB_USER = '<username>' ">>password.py
+
 cat "DB_PASS = '<password>' ">>password.py
 
 
-# From Here onwards, I'm still working on it... will update the progress on this readme as I complete work. THe google doc is like;y to be updated more frequently, simply because its easier to do so, (and fonts render immediately and spell chaecks are available)
+# From Here onwards, I'm still working on it... will update the progress on this readme as I complete work. The google doc is like;y to be updated more frequently, simply because its easier to do so, (and fonts render immediately and spell chaecks are available)
 
 
 ### Part 3: Django modifications using [this resource](http://tutorial.djangogirls.org/en/django/)
 
- *- Created New Branch 'Django_PostGres'*
+ - *Created New Branch 'Django_PostGres'*
 
  git branch Django_PostGres
  git checkout Django_PostGres
 
 
 
- *- Editted Code to make new Django server and new PostGres DB and point Django to it* 
+ - *Editted Code to make new Django server and new PostGres DB and point Django to it* 
 
 editted settings.py file and 
 
 
 
- *- Merged Branch back into original after review*
+ - *Merged Branch back into original after review*
 
 git 
 
 
 
- *- Ran Migrate commands on Azure Server to create new Django Server which points to PostGresDB*
+ - *Ran Migrate commands on Azure Server to create new Django Server which points to PostGresDB*
 
 cd 
 
 python manage.py makemigrations 
 python manage.py migrate 
-
-
 
 
 
