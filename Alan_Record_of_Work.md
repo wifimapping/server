@@ -151,9 +151,8 @@ cd
 python manage.py makemigrations 
 python manage.py migrate 
 
+### Part 4: Database Dump
 
 
- ### Part 4: Database Dump
- 
  - Dumped all data from old DB into new DB
  (Still to do)
