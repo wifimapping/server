@@ -3,7 +3,8 @@ Django settings for DjangoWebProject project.
 """
 
 from os import path
-import PGpassword as password
+import password
+import PGpassword
 PROJECT_ROOT = path.dirname(path.abspath(path.dirname(__file__)))
 
 DEBUG = True
@@ -20,14 +21,23 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'mysql': {
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': password.DB_NAME,
         'USER': password.DB_USER,
         'PASSWORD': password.DB_PASS,
         'HOST': 'localhost',
         'PORT': '',
 	'CONN_MAX_AGE': 900,
+    },
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': PGpassword.DB_NAME,
+        'USER': PGpassword.DB_USER,
+        'PASSWORD': PGpassword.DB_PASS,
+        'HOST': 'localhost',
+        'PORT': '',
+    'CONN_MAX_AGE': 900,
     }
 }
 
