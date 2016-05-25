@@ -3,7 +3,7 @@ Django settings for DjangoWebProject project.
 """
 
 from os import path
-import password
+import PGpassword as password
 PROJECT_ROOT = path.dirname(path.abspath(path.dirname(__file__)))
 
 DEBUG = True
