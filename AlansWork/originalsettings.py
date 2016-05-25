@@ -41,26 +41,6 @@ DATABASES = {
     }
 }
 
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'dbname',
-        'USER': 'dbuser',
-        'PASSWORD': 'dbpass',
-        'HOST': 'mysql.example.com',
-        'PORT': '',
-    },
-    'postgresql': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dbname',
-        'USER': 'dbuser',
-        'PASSWORD': 'dbpass',
-        'HOST': 'postgresql.example.com',
-        'PORT': '',
-    }
-}
-
 LOGIN_URL = '/login'
 
 # Local time zone for this installation. Choices can be found here:
