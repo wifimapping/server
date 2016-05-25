@@ -4,6 +4,7 @@ Django settings for DjangoWebProject project.
 
 from os import path
 import password
+import PGpassword
 PROJECT_ROOT = path.dirname(path.abspath(path.dirname(__file__)))
 
 DEBUG = True
@@ -28,6 +29,35 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '',
 	'CONN_MAX_AGE': 900,
+    },
+    'postgresql': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': PGpassword.DB_NAME,
+        'USER': PGpassword.DB_USER,
+        'PASSWORD': PGpassword.DB_PASS,
+        'HOST': 'localhost',
+        'PORT': '',
+    'CONN_MAX_AGE': 900,
+    }
+}
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'dbname',
+        'USER': 'dbuser',
+        'PASSWORD': 'dbpass',
+        'HOST': 'mysql.example.com',
+        'PORT': '',
+    },
+    'postgresql': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'dbname',
+        'USER': 'dbuser',
+        'PASSWORD': 'dbpass',
+        'HOST': 'postgresql.example.com',
+        'PORT': '',
     }
 }
 
