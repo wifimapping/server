@@ -36,6 +36,7 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 
+mysql2pgsql.yml
 PGpassword.py
 password.py
 *.pyc
