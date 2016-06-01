@@ -30,7 +30,7 @@ class UniqueLocations(models.Model):
     lng = models.FloatField(primary_key=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'unique_locations'
 
     def __unicode__(self):
