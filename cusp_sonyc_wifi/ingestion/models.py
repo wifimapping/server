@@ -13,6 +13,19 @@ class UniqueLocations(models.Model):
     def __unicode__(self):
         return " / " + str(self.lat) + " / " + str(self.lng)
 
+class TempLocations(models.Model):
+    idx = models.AutoField(primary_key=True)
+    lat = models.DecimalField(max_digits=8, decimal_places=4)
+    lng = models.DecimalField(max_digits=8, decimal_places=4)
+
+    class Meta:
+        managed = True
+        db_table = 'unique_locations'
+
+    def __unicode__(self):
+        return " / " + str(self.lat) + " / " + str(self.lng)
+
+
 class WifiScan(models.Model):
     idx = models.BigIntegerField(primary_key=True)
     lat = models.FloatField()
