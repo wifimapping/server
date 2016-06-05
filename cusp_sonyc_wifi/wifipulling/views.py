@@ -7,8 +7,79 @@ import simplejson as json
 import datetime
 import time
 from django.db import connection
+import math
+import pandas as pd
+import numpy as np
+from scipy.misc import imresize
+from matplotlib import cm
+from PIL import Image
 
 col_name = {'idx':1, 'lat':1, 'lng':1, 'acc':1, 'altitude':1, 'time':1, 'device_mac':1, 'app_version':1, 'droid_version':1, 'device_model':1, 'ssid':1, 'bssid':1, 'caps':1, 'level':1, 'freq':1}
+
+
+def num2deg(xtile, ytile, zoom):
+    n = 2.0 ** zoom
+    lon_deg = xtile / n * 360.0 - 180.0
+    lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * ytile / n)))
+    lat_deg = math.degrees(lat_rad)
+    return (lat_deg, lon_deg)
+
+def generateTile(x, y, zoom, request):
+    ssid = request.GET.get('ssid', None)
+    agg_function = requests.GET.get('agg_function', 'median')
+
+    nw_corner = num2deg(x, y, zoom)
+    se_corner = num2deg(x+1, y+1, zoom)
+
+    lats = [min(nw_corner[0], se_corner[0]), max(nw_corner[0], se_corner[0])]
+    lngs = [min(nw_corner[1], se_corner[1]), max(nw_corner[1], se_corner[1])]
+
+    lats2 = np.around([lats[0] - .0001, lats[1] + .0001], decimals=4)
+    lngs2 = np.around([lngs[0] - .0001, lngs[1] + .0001], decimals=4)
+
+    '''df2 = df.round(4)
+    groups = df2.groupby(('lat', 'lng'), as_index=False)
+    agg = getattr(groups, agg_function)()
+
+    points = agg[
+        (agg['lat'] >= lats2[0]) &
+        (agg['lat'] <= lats2[1]) &
+        (agg['lng'] >= lngs2[0]) &
+        (agg['lng'] <= lngs2[1])
+    ]'''
+
+    df = pd.DataFrame.from_records(
+        WifiScan.objects.filter(
+            ssid=ssid,
+            lat__gte=lats2[0], lat__lte=lats2[1],
+            lng__gte=lngs2[0], lng__lte=lngs2[1],
+        ).values('lat', 'lng', 'level')
+    ).round(4)
+
+    groups = df2.groupby(('lat', 'lng'), as_index=False)
+    points = getattr(groups, agg_function)()
+
+
+    size = np.rint([(lngs2[1] - lngs2[0]) / .0001 + 1, (lats2[1] - lats2[0]) / .0001 + 1])
+
+    zi, xi, yi = np.histogram2d(
+        points['lng'], points['lat'], weights=points['level'],
+        bins=size, normed=False, range=[lngs2, lats2]
+    )
+    zi = np.ma.masked_equal(zi, 0)
+    zi = ((np.clip(zi, -90, -29) + 91) * 4.25).astype(int)
+    pixels = imresize(np.rot90(zi), size=(256,256), interp='nearest') / 255
+    color = np.uint8(cm.jet(pixels) * 255)
+
+    color[pixels == 0,3] = 0
+
+    return Image.fromarray(color)
+
+def tile(request, zoom, x, y):
+    response = HttpResponse(mimetype="image/png")
+    generateTile(x, y, zoom, request).save(response, "PNG")
+    return response
+
 
 def index(request):
 
@@ -25,11 +96,11 @@ def index(request):
         try:
             offset = int(off_size)
         except:
-            pass    
+            pass
     idx_start = offset
     idx_end = offset + batch
     is_full_size = True if (b_size==''and off_size=='') else False
-    
+
     q_idx = request.GET.get('idx', '')
     q_lat = request.GET.get('lat', '')
     q_lng = request.GET.get('lng', '')
@@ -49,12 +120,12 @@ def index(request):
     q_frq = request.GET.get('freq', '')
     q_colname = request.GET.get('columns', '')
     q_decimal = request.GET.get('decimal', '')
-    
+
     response_data = []
     tem=[]
     if (q_decimal != ''):
         decimal_place = 8
-        
+
         try:
             decimal_place = int(q_decimal)
         except:
@@ -63,14 +134,14 @@ def index(request):
         cursor = connection.cursor()
         cursor.execute('SELECT DISTINCT TRUNCATE(lat,%d),TRUNCATE(lng,%d) FROM wifi_scan' % (decimal_place, decimal_place))
         tem = cursor.fetchall()
-        
+
     else:
         query_set = None
         try:
             query_set = WifiScan.objects.all()
         except:
             pass
-        
+
         if (query_set != None):
             if (q_idx != ''): # int
                 try:
@@ -135,7 +206,7 @@ def index(request):
                     query_set = query_set.filter(freq=q_frq)
                 except:
                     pass
-                    
+
             #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             human_readable = 0
             q_timeformat = request.GET.get('timeformat', '')
@@ -143,14 +214,14 @@ def index(request):
                 human_readable = int(q_timeformat)
             except:
                 pass
-            
+
             is_distinct = 0
             q_distinct = request.GET.get('distinct', '')
             try:
                 is_distinct = int(q_distinct)
             except:
                 pass
-            
+
             list_name=[]
             if (q_colname == ''):
                 if (is_distinct == 1):
@@ -167,11 +238,11 @@ def index(request):
                     tem=query_set.values(*args).distinct()
                 else:
                     tem=query_set.values(*args)
-            
+
             #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             if (is_full_size == False):
                 tem = tem[idx_start:idx_end]
-            
+
             #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             key = 'time'
             if (q_colname == '' or key in list_name):
@@ -181,8 +252,7 @@ def index(request):
                 elif(human_readable == 2):
                     for item in tem:
                         item['time2']=(datetime.datetime.fromtimestamp(item[key]/1000)).strftime('%m-%d-%Y %H:%M:%S')
-    
-    response_data = list(tem)
-       
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
 
+    response_data = list(tem)
+
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
