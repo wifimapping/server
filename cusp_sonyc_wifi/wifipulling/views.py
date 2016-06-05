@@ -26,7 +26,7 @@ def num2deg(xtile, ytile, zoom):
 
 def generateTile(x, y, zoom, request):
     ssid = request.GET.get('ssid', None)
-    agg_function = requests.GET.get('agg_function', 'median')
+    agg_function = request.GET.get('agg_function', 'median')
 
     nw_corner = num2deg(x, y, zoom)
     se_corner = num2deg(x+1, y+1, zoom)
@@ -37,17 +37,6 @@ def generateTile(x, y, zoom, request):
     lats2 = np.around([lats[0] - .0001, lats[1] + .0001], decimals=4)
     lngs2 = np.around([lngs[0] - .0001, lngs[1] + .0001], decimals=4)
 
-    '''df2 = df.round(4)
-    groups = df2.groupby(('lat', 'lng'), as_index=False)
-    agg = getattr(groups, agg_function)()
-
-    points = agg[
-        (agg['lat'] >= lats2[0]) &
-        (agg['lat'] <= lats2[1]) &
-        (agg['lng'] >= lngs2[0]) &
-        (agg['lng'] <= lngs2[1])
-    ]'''
-
     df = pd.DataFrame.from_records(
         WifiScan.objects.filter(
             ssid=ssid,
@@ -56,9 +45,11 @@ def generateTile(x, y, zoom, request):
         ).values('lat', 'lng', 'level')
     ).round(4)
 
-    groups = df2.groupby(('lat', 'lng'), as_index=False)
-    points = getattr(groups, agg_function)()
+    if len(df) == 0:
+        return Image.new("RGBA", (256,256))
 
+    groups = df.groupby(('lat', 'lng'), as_index=False)
+    points = getattr(groups, agg_function)()
 
     size = np.rint([(lngs2[1] - lngs2[0]) / .0001 + 1, (lats2[1] - lats2[0]) / .0001 + 1])
 
@@ -66,9 +57,12 @@ def generateTile(x, y, zoom, request):
         points['lng'], points['lat'], weights=points['level'],
         bins=size, normed=False, range=[lngs2, lats2]
     )
+
     zi = np.ma.masked_equal(zi, 0)
     zi = ((np.clip(zi, -90, -29) + 91) * 4.25).astype(int)
-    pixels = imresize(np.rot90(zi), size=(256,256), interp='nearest') / 255
+
+    pixels = imresize(np.rot90(zi), size=(256,256), interp='nearest') / 255.0
+
     color = np.uint8(cm.jet(pixels) * 255)
 
     color[pixels == 0,3] = 0
@@ -76,8 +70,8 @@ def generateTile(x, y, zoom, request):
     return Image.fromarray(color)
 
 def tile(request, zoom, x, y):
-    response = HttpResponse(mimetype="image/png")
-    generateTile(x, y, zoom, request).save(response, "PNG")
+    response = HttpResponse(content_type="image/png")
+    generateTile(int(x), int(y), int(zoom), request).save(response, "PNG")
     return response
 
 
