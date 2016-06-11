@@ -21,7 +21,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASES = {
-    'default': {
+    'mysql': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': password.DB_NAME,
         'USER': password.DB_USER,
@@ -30,7 +30,7 @@ DATABASES = {
         'PORT': '',
 	'CONN_MAX_AGE': 900,
     },
-    'postgres': {
+    'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': PGpassword.DB_NAME,
         'USER': PGpassword.DB_USER,

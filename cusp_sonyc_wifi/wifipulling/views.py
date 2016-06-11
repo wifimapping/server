@@ -25,6 +25,7 @@ def num2deg(xtile, ytile, zoom):
     return (lat_deg, lon_deg)
 
 def generateTile(x, y, zoom, request):
+    timestamp = int(time.time())
     ssid = request.GET.get('ssid', None)
     agg_function = request.GET.get('agg_function', 'median')
 
@@ -37,19 +38,41 @@ def generateTile(x, y, zoom, request):
     lats2 = np.around([lats[0] - .0001, lats[1] + .0001], decimals=4)
     lngs2 = np.around([lngs[0] - .0001, lngs[1] + .0001], decimals=4)
 
+    print "Check 1", int(time.time()) - timestamp
+    timestamp = int(time.time())
+
+    records = WifiScan.objects.filter(
+        ssid=ssid,
+        lat__gte=lats2[0], lat__lte=lats2[1],
+        lng__gte=lngs2[0], lng__lte=lngs2[1],
+    ).values('lat', 'lng', 'level')
+
+    print records.query
+    print len(records)
+
+    print "Check 2", int(time.time()) - timestamp
+    timestamp = int(time.time())
+
     df = pd.DataFrame.from_records(
-        WifiScan.objects.filter(
-            ssid=ssid,
-            lat__gte=lats2[0], lat__lte=lats2[1],
-            lng__gte=lngs2[0], lng__lte=lngs2[1],
-        ).values('lat', 'lng', 'level')
-    ).round(4)
+        records
+    )
+
+    print "Check 2.5", int(time.time()) - timestamp
+    timestamp = int(time.time())
+
+    df = df.round(4)
+
+
+    print "Check 3", int(time.time()) - timestamp
+    timestamp = int(time.time())
+
 
     if len(df) == 0:
         return Image.new("RGBA", (256,256))
 
     groups = df.groupby(('lat', 'lng'), as_index=False)
     points = getattr(groups, agg_function)()
+
 
     size = np.rint([(lngs2[1] - lngs2[0]) / .0001 + 1, (lats2[1] - lats2[0]) / .0001 + 1])
 
@@ -66,6 +89,9 @@ def generateTile(x, y, zoom, request):
     color = np.uint8(cm.jet(pixels) * 255)
 
     color[pixels == 0,3] = 0
+
+    print "Check 4", int(time.time()) - timestamp
+    timestamp = int(time.time())
 
     return Image.fromarray(color)
 
