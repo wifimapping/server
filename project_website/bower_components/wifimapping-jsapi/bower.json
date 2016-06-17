@@ -1,0 +1,20 @@
+{
+  "name": "wifimapping-jsapi",
+  "homepage": "",
+  "authors": [
+  ],
+  "contributors": [
+  ],
+  "description": "A javascript API for the Wifimapping web API.",
+  "main": "./src/wifimappingapi.js",
+  "keywords": [
+  ],
+  "license": "",
+  "ignore": [
+  ],
+  "dependencies": {
+    "angular": "^1.x"
+  },
+  "devDependencies": {
+  }
+}

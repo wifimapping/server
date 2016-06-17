@@ -1,0 +1,11 @@
+{
+  "name": "wifimapping-jsapi",
+  "version": "1.0.0",
+  "description": "A javascript API for the wifimapping Web API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="Heatmap">
 
 <head>
 
@@ -11,6 +11,15 @@
 
     <title>WiFind - Mapping Wi-Fi Coverage in NYC</title>
 
+    <!-- Scripts for Heatmaps -->
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/heatmap.js-amd/build/heatmap.js"></script>
+    <script src="bower_components/wifimapping-jsapi/src/wifimappingapi.js"></script>
+    <script src="bower_components/heatmap.js-amd/plugins/leaflet-heatmap.js"></script>
+    <script src="js/index.js"></script>  
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+    
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
@@ -31,7 +40,7 @@
 
 </head>
 
-<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" ng-controller="Ctrl">
 
     <!-- Navigation -->
     <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
@@ -95,6 +104,7 @@
                 <h2>About WiFind</h2>
                 <p>This project seeks to visualize the prevalence of Wi-Fi coverage throughout all five boroughs of New York City in order to understand accessibility levels citywide.Using an Android mobile application, users can measure and record the signal strength of Wi-Fi networks around them as they move through the city.</p>
                 <p>Our hope is that these readings can help inform a wide array of academic and social purposes, ranging from visualizing digital equality to finding the closest open Wi-Fi network.</p>
+                <p>The project team is from <a href="http://cusp.nyu.edu">NYU CUSP</a>, an university-wide research center focusing on urban systems and urban informatics. We aim to use data analytics to understand complex urban systems and ultimately improve quality of life for those living in cities throughout the world. </p>
             </div>
         </div>
     </section>
@@ -105,7 +115,8 @@
             <div class="container">
                 <div class="col-lg-8 col-lg-offset-2">
                     <h2>Getting App</h2>
-                    <p>App is available at blah blah. How app is going to work?</p>
+                    <p>Our Android mobile application measures and records the signal strength of Wi-Fi networks around users as users move through the city. Using our application will not interfere any other processes in your Android device.</p>
+                    <p>Help us collect data by using our application! You can download our App in the following link.</p>
                     <a href="http://startbootstrap.com/template-overviews/grayscale/" class="btn btn-default btn-lg">Visit Download Page</a>
                 </div>
             </div>
@@ -117,10 +128,26 @@
          <div class="row">
              <div class="col-lg-8 col-lg-offset-2">
                  <h2>Current Map</h2>
-                 <p>Introduction to Map</p>
+                 <p>The map shows the intensity of Wi-Fi signal at various locations in New York City based on the current data we have collected. To use this map, simply type in the SSID (name of the Wi-Fi) you want to show then choose an aggregation function and click the "SHOW MAP" button.</p>
+                 <p>There are three aggregation functions available for choose. Choosing "Median" will show you the median value of signal intesity at each location. Likewise, choosing "Max" or "Average" will give you the maximum or average value of signal intesity at each location. </p>
              </div>
          </div>
-           <div id="map"></div>
+         <form class="form-inline" id="seach-bar">
+             <div class="form-group">
+                 <label for="SSID"> SSID: </label>
+                 <input type="text" class="form-control" ng-model='params.ssid' placeholder="NYU">
+             </div>
+             <div class="form-group">
+                 <label for="aggregation">Aggregation Function: </label>
+                 <select name="aggregation" class="form-control" ng-model="params.aggregation">
+                 <option value="median" selected="selected">Median</option>
+                 <option value="mean">Mean</option>
+                 <option value="max">Max</option>
+                 </select>
+             </div>
+             <button class="btn btn-default" ng-click="execute()">Show Map</button>
+          </form>
+     <div id="map"></div>
     </section>
     
  
@@ -130,7 +157,7 @@
             <div class="col-lg-8 col-lg-offset-2">
                 <h2>Contact Us</h2>
                 <p>Please email us to provide some feedback on our project, give us suggestions for new feautures. This is an open source project, feel free to check out our code at Github.</p>
-                <p><a href="mailto:yc2474@nyu.edu">wifind@gmail.com</a>
+                <p><a href="mailto:wifindproject@nyu.edu">wifindproject@gmail.com</a>
                 </p>
                 <ul class="list-inline banner-social-buttons">
                     <li>
@@ -160,11 +187,15 @@
     <!-- Plugin JavaScript -->
     <script src="js/jquery.easing.min.js"></script>
 
-    <!-- Google Maps API Key - Use your own API key to enable the map feature. More information on the Google Maps API can be found at https://developers.google.com/maps/ -->
+<!--
+     Google Maps API Key - Use your own API key to enable the map feature. More information on the Google Maps API can be found at https://developers.google.com/maps/ 
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRngKslUGJTlibkQ3FkfTxj3Xss1UlZDA&sensor=false"></script>
+-->
 
     <!-- Custom Theme JavaScript -->
     <script src="js/grayscale.js"></script>
+    
+
 
 </body>
 
