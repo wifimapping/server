@@ -68,10 +68,10 @@
                         <a class="page-scroll" href="#gettingapp">Getting App</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#currentmap">Current Map</a>
+                        <a class="page-scroll" href="#currentmap">The Map</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#contact">Contact Us</a>
+                        <a class="page-scroll" href="#contact">Contact</a>
                     </li>
                 </ul>
             </div>
@@ -127,14 +127,14 @@
      <section id="currentmap" class="container content-section text-center">
          <div class="row">
              <div class="col-lg-8 col-lg-offset-2">
-                 <h2>Current Map</h2>
-                 <p>The map shows the intensity of Wi-Fi signal at various locations in New York City based on the current data we have collected. To use this map, simply type in the SSID (name of the Wi-Fi) you want to show then choose an aggregation function and click the "SHOW MAP" button.</p>
+                 <h2>The Map</h2>
+                 <p>The map shows the intensity of Wi-Fi signal at various locations in New York City based on the current data we have collected. To use this map, simply type in the name of network you want to show then choose an aggregation function and click the "SHOW DATA" button.</p>
                  <p>There are three aggregation functions available for choose. Choosing "Median" will show you the median value of signal intesity at each location. Likewise, choosing "Max" or "Average" will give you the maximum or average value of signal intesity at each location. </p>
              </div>
          </div>
          <form class="form-inline" id="seach-bar">
              <div class="form-group">
-                 <label for="SSID"> SSID: </label>
+                 <label for="SSID"> Network Name: </label>
                  <input type="text" class="form-control" ng-model='params.ssid' placeholder="NYU">
              </div>
              <div class="form-group">
@@ -145,7 +145,7 @@
                  <option value="max">Max</option>
                  </select>
              </div>
-             <button class="btn btn-default" ng-click="execute()">Show Map</button>
+             <button class="btn btn-default" ng-click="execute()">Show Data</button>
           </form>
      <div id="map"></div>
     </section>
@@ -155,7 +155,7 @@
     <section id="contact" class="container content-section text-center">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2">
-                <h2>Contact Us</h2>
+                <h2>Contact</h2>
                 <p>Please email us to provide some feedback on our project, give us suggestions for new feautures. This is an open source project, feel free to check out our code at Github.</p>
                 <p><a href="mailto:wifindproject@nyu.edu">wifindproject@gmail.com</a>
                 </p>
