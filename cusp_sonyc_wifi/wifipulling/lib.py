@@ -10,35 +10,57 @@ from PIL import Image
 from django.db import connection
 from django.conf import settings
 
+ZOOM_OFFSET = {
+    12: 1,
+    13: .5,
+    14: .2,
+    15: .11,
+    16: .06,
+    17: .03,
+    18: .02
+}
+
 
 def getTopSSIDs(threshold=settings.SSID_THRESHOLD):
     cursor = connection.cursor()
     cursor.execute('SELECT ssid FROM wifi_scan GROUP BY ssid HAVING COUNT(*) > %s;' % (threshold))
-    return cursor.fetchall()
+    return [i[0] for i in cursor.fetchall() if i[0]]
 
 def getBoundingBox(ssid):
     cursor = connection.cursor()
-    cursor.execute('SELECT MIN(lat), MAX(lat), MIN(lng), MAX(lng) from wifi_scan WHERE ssid="%s"' % (ssid))
-    r = cursor.fetchall()
+    cursor.execute('SELECT MIN(lat), MAX(lat), MIN(lng), MAX(lng) from wifi_scan WHERE ssid="%s" AND acc < 50' % (ssid))
+    r = cursor.fetchall()[0]
+    print r
     return {
         'nw_corner': [r[1], r[2]],
         'se_corner': [r[0], r[3]]
     }
 
+def getPath(ssid, agg_function, zoom, x, y):
+    path = os.path.join(
+	settings.TILE_DIR, ssid, agg_function,
+	str(zoom), str(x), '%s.png' % y
+    )
+    return path
+
 def generateTiles(ssid):
     zoom_range=range(settings.ZOOM_MIN, settings.ZOOM_MAX+1)
     boundingBox = getBoundingBox(ssid)
 
+    df = pd.DataFrame.from_records(
+	WifiScan.objects.filter(ssid=ssid).values('lat', 'lng', 'level')
+    ).round(4)
+
     for zoom in zoom_range:
         nw_corner = deg2num(
-            boundingBox['nw_corner'][0],
-            boundingBox['nw_corner'][1],
+            boundingBox['nw_corner'][0] + ZOOM_OFFSET[zoom],
+            boundingBox['nw_corner'][1] - ZOOM_OFFSET[zoom],
             zoom
         )
 
         se_corner = deg2num(
-            boundingBox['se_corner'][0],
-            boundingBox['se_corner'][1],
+            boundingBox['se_corner'][0] - ZOOM_OFFSET[zoom],
+            boundingBox['se_corner'][1] + ZOOM_OFFSET[zoom],
             zoom
         )
 
@@ -48,11 +70,12 @@ def generateTiles(ssid):
                     tile = generateTile(x, y, zoom, {
                         'ssid': ssid,
                         'agg_function': agg_function
-                    })
-                    path = os.path.join(
-                        settings.TILE_DIR, ssid, agg_function,
-                        str(zoom), str(x), '%s.png' % y
-                    )
+                    }, df)
+
+                    path = getPath(ssid, agg_function, zoom, x, y)
+		    if not os.path.exists(os.path.dirname(path)):
+		        os.makedirs(os.path.dirname(path))
+
                     tile.save(path)
 
 def num2deg(xtile, ytile, zoom):
@@ -69,7 +92,7 @@ def deg2num(lat_deg, lon_deg, zoom):
   ytile = int((1.0 - math.log(math.tan(lat_rad) + (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)
   return (xtile, ytile)
 
-def generateTile(x, y, zoom, params):
+def generateTile(x, y, zoom, params, allRecords=None):
     timestamp = int(time.time())
     ssid = params['ssid']
     agg_function = params['agg_function']
@@ -86,26 +109,35 @@ def generateTile(x, y, zoom, params):
     print "Check 1", int(time.time()) - timestamp
     timestamp = int(time.time())
 
-    records = WifiScan.objects.filter(
-        ssid=ssid,
-        lat__gte=lats2[0], lat__lte=lats2[1],
-        lng__gte=lngs2[0], lng__lte=lngs2[1],
-    ).values('lat', 'lng', 'level')
+    if allRecords is not None:
+        df = allRecords[
+            (allRecords.lat >= lats2[0]) &
+            (allRecords.lat <= lats2[1]) &
+            (allRecords.lng >= lngs2[0]) &
+            (allRecords.lng <= lngs2[1])
+        ]
+             
+    else:
+        records = WifiScan.objects.filter(
+            ssid=ssid,
+            lat__gte=lats2[0], lat__lte=lats2[1],
+            lng__gte=lngs2[0], lng__lte=lngs2[1],
+        ).values('lat', 'lng', 'level')
 
-    print records.query
-    print len(records)
+        print records.query
+        print len(records)
 
-    print "Check 2", int(time.time()) - timestamp
-    timestamp = int(time.time())
+        print "Check 2", int(time.time()) - timestamp
+        timestamp = int(time.time())
 
-    df = pd.DataFrame.from_records(
-        records
-    )
+        df = pd.DataFrame.from_records(
+            records
+        )
 
-    print "Check 2.5", int(time.time()) - timestamp
-    timestamp = int(time.time())
+        print "Check 2.5", int(time.time()) - timestamp
+        timestamp = int(time.time())
 
-    df = df.round(4)
+        df = df.round(4)
 
 
     print "Check 3", int(time.time()) - timestamp

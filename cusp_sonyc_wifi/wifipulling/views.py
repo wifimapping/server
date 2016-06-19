@@ -6,6 +6,7 @@ from ingestion.models import WifiScan
 import simplejson as json
 import datetime
 import time
+import os
 from django.db import connection
 import math
 import pandas as pd
@@ -13,19 +14,27 @@ import numpy as np
 from scipy.misc import imresize
 from matplotlib import cm
 from PIL import Image
-from lib import generateTile
+from lib import generateTile, getPath
 
 col_name = {'idx':1, 'lat':1, 'lng':1, 'acc':1, 'altitude':1, 'time':1, 'device_mac':1, 'app_version':1, 'droid_version':1, 'device_model':1, 'ssid':1, 'bssid':1, 'caps':1, 'level':1, 'freq':1}
 
 def tile(request, zoom, x, y):
     response = HttpResponse(content_type="image/png")
-    generateTile(
-        int(x), int(y), int(zoom),
-        {
-            'ssid': request.GET.get('ssid', None),
-            'agg_function': request.GET.get('agg_function', 'median')
-        }
-    ).save(response, "PNG")
+
+    params =  {
+        'ssid': request.GET.get('ssid', None),
+        'agg_function': request.GET.get('agg_function', 'median')
+    }
+
+    # Short circuit if the tiles exist
+    path = getPath(params['ssid'], params['agg_function'], zoom, x, y)
+    if os.path.exists(path):
+        Image.open(path).save(response, "PNG")
+    else:
+        generateTile(
+            int(x), int(y), int(zoom), params
+        ).save(response, "PNG")
+
     return response
 
 
