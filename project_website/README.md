@@ -1,8 +1,18 @@
 # WiFind Project Website Demo
-This is just a demo page to show the layout of the WiFind project website.  
+This is a bootstrap page modified for project website.  
 To do list:  
 
-* Write the text content in __Getting App__ Section
-* Write a brief introduction about the __Current Map__ 
-* Add leaflet heatmap in __Current Map__ Section
-* Make Sure the footer is correct.
+### Update:
+* Changed section order to Map-App-About-Contact
+* Fixed some terms (e.g. contact us-contact; SSID-netowrk name)
+* Fixed the link of download page
+* Removed dependencies for Angular.js, Jquery, Heatmap.js, Wifimapping Api
+* Increased the height of map
+
+* * *
+
+### Need to do: 
+* Try to replace header image with actual map in the page top
+* Add static colorbar legend under the map
+* Preload heatmap for NYU 
+* Make Sure the footer is correct
