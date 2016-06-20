@@ -30,7 +30,6 @@ def getBoundingBox(ssid):
     cursor = connection.cursor()
     cursor.execute('SELECT MIN(lat), MAX(lat), MIN(lng), MAX(lng) from wifi_scan WHERE ssid="%s" AND acc < 50' % (ssid))
     r = cursor.fetchall()[0]
-    print r
     return {
         'nw_corner': [r[1], r[2]],
         'se_corner': [r[0], r[3]]
@@ -106,7 +105,6 @@ def generateTile(x, y, zoom, params, allRecords=None):
     lats2 = np.around([lats[0] - .0001, lats[1] + .0001], decimals=4)
     lngs2 = np.around([lngs[0] - .0001, lngs[1] + .0001], decimals=4)
 
-    print "Check 1", int(time.time()) - timestamp
     timestamp = int(time.time())
 
     if allRecords is not None:
@@ -124,23 +122,18 @@ def generateTile(x, y, zoom, params, allRecords=None):
             lng__gte=lngs2[0], lng__lte=lngs2[1],
         ).values('lat', 'lng', 'level')
 
-        print records.query
-        print len(records)
 
-        print "Check 2", int(time.time()) - timestamp
         timestamp = int(time.time())
 
         df = pd.DataFrame.from_records(
             records
         )
 
-        print "Check 2.5", int(time.time()) - timestamp
         timestamp = int(time.time())
 
         df = df.round(4)
 
 
-    print "Check 3", int(time.time()) - timestamp
     timestamp = int(time.time())
 
 
@@ -167,7 +160,6 @@ def generateTile(x, y, zoom, params, allRecords=None):
 
     color[pixels == 0,3] = 0
 
-    print "Check 4", int(time.time()) - timestamp
     timestamp = int(time.time())
 
     return Image.fromarray(color)
