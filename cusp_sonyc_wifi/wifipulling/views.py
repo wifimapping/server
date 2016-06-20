@@ -6,6 +6,7 @@ from ingestion.models import WifiScan
 import simplejson as json
 import datetime
 import time
+import os
 from django.db import connection
 import math
 import pandas as pd
@@ -13,91 +14,27 @@ import numpy as np
 from scipy.misc import imresize
 from matplotlib import cm
 from PIL import Image
+from lib import generateTile, getPath
 
 col_name = {'idx':1, 'lat':1, 'lng':1, 'acc':1, 'altitude':1, 'time':1, 'device_mac':1, 'app_version':1, 'droid_version':1, 'device_model':1, 'ssid':1, 'bssid':1, 'caps':1, 'level':1, 'freq':1}
 
-
-def num2deg(xtile, ytile, zoom):
-    n = 2.0 ** zoom
-    lon_deg = xtile / n * 360.0 - 180.0
-    lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * ytile / n)))
-    lat_deg = math.degrees(lat_rad)
-    return (lat_deg, lon_deg)
-
-def generateTile(x, y, zoom, request):
-    timestamp = int(time.time())
-    ssid = request.GET.get('ssid', None)
-    agg_function = request.GET.get('agg_function', 'median')
-
-    nw_corner = num2deg(x, y, zoom)
-    se_corner = num2deg(x+1, y+1, zoom)
-
-    lats = [min(nw_corner[0], se_corner[0]), max(nw_corner[0], se_corner[0])]
-    lngs = [min(nw_corner[1], se_corner[1]), max(nw_corner[1], se_corner[1])]
-
-    lats2 = np.around([lats[0] - .0001, lats[1] + .0001], decimals=4)
-    lngs2 = np.around([lngs[0] - .0001, lngs[1] + .0001], decimals=4)
-
-    print "Check 1", int(time.time()) - timestamp
-    timestamp = int(time.time())
-
-    records = WifiScan.objects.filter(
-        ssid=ssid,
-        lat__gte=lats2[0], lat__lte=lats2[1],
-        lng__gte=lngs2[0], lng__lte=lngs2[1],
-    ).values('lat', 'lng', 'level')
-
-    print records.query
-    print len(records)
-
-    print "Check 2", int(time.time()) - timestamp
-    timestamp = int(time.time())
-
-    df = pd.DataFrame.from_records(
-        records
-    )
-
-    print "Check 2.5", int(time.time()) - timestamp
-    timestamp = int(time.time())
-
-    df = df.round(4)
-
-
-    print "Check 3", int(time.time()) - timestamp
-    timestamp = int(time.time())
-
-
-    if len(df) == 0:
-        return Image.new("RGBA", (256,256))
-
-    groups = df.groupby(('lat', 'lng'), as_index=False)
-    points = getattr(groups, agg_function)()
-
-
-    size = np.rint([(lngs2[1] - lngs2[0]) / .0001 + 1, (lats2[1] - lats2[0]) / .0001 + 1])
-
-    zi, xi, yi = np.histogram2d(
-        points['lng'], points['lat'], weights=points['level'],
-        bins=size, normed=False, range=[lngs2, lats2]
-    )
-
-    zi = np.ma.masked_equal(zi, 0)
-    zi = ((np.clip(zi, -90, -29) + 91) * 4.25).astype(int)
-
-    pixels = imresize(np.rot90(zi), size=(256,256), interp='nearest') / 255.0
-
-    color = np.uint8(cm.jet(pixels) * 255)
-
-    color[pixels == 0,3] = 0
-
-    print "Check 4", int(time.time()) - timestamp
-    timestamp = int(time.time())
-
-    return Image.fromarray(color)
-
 def tile(request, zoom, x, y):
     response = HttpResponse(content_type="image/png")
-    generateTile(int(x), int(y), int(zoom), request).save(response, "PNG")
+
+    params =  {
+        'ssid': request.GET.get('ssid', None),
+        'agg_function': request.GET.get('agg_function', 'median')
+    }
+
+    # Short circuit if the tiles exist
+    path = getPath(params['ssid'], params['agg_function'], zoom, x, y)
+    if os.path.exists(path):
+        Image.open(path).save(response, "PNG")
+    else:
+        generateTile(
+            int(x), int(y), int(zoom), params
+        ).save(response, "PNG")
+
     return response
 
 

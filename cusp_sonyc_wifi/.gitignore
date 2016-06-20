@@ -41,3 +41,4 @@ PGpassword.py
 password.py
 *.pyc
 app/*
+nohup.out

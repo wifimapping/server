@@ -181,3 +181,9 @@ LOGGING = {
 
 # Specify the default test runner.
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
+TILE_DIR = '/mnt/tiles'
+SSID_THRESHOLD = 50000
+ZOOM_MIN = 12
+ZOOM_MAX = 17
+AGGREGATION = ['mean', 'median', 'max']
