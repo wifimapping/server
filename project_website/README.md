@@ -8,11 +8,11 @@ To do list:
 * Fixed the link of download page
 * Removed dependencies for Angular.js, Jquery, Heatmap.js, Wifimapping Api
 * Increased the height of map
+* Added static colorbar legend under the map
 
 * * *
 
 ### Need to do: 
 * Try to replace header image with actual map in the page top
-* Add static colorbar legend under the map
 * Preload heatmap for NYU 
-* Make Sure the footer is correct
+* Correct the footer
