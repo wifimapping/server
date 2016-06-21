@@ -24,8 +24,8 @@ var AGGREGATION = {
 
 
 angular
-.module('Heatmap', ['WifiMapping'])
-.controller('Ctrl', function($scope, wifiMappingAPI) {
+.module('Heatmap', [])
+.controller('Ctrl', function($scope) {
     $scope.params = {
         aggregation: 'median',
         ssid: 'nyu'
@@ -36,79 +36,20 @@ angular
     var baseLayer = L.tileLayer(
       'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; CartoDB',
-        maxZoom: 18
+        maxZoom: 17
       }
     );
-
-    /*var cfg = {
-      "radius": .0001,
-      "scaleRadius": true,
-      "useLocalExtrema": false,
-
-      latField: 'lat',
-      lngField: 'lng',
-      valueField: 'level',
-
-      useGradientOpacity: false,
-      blur: 0,
-      opacity: .5
-  };
-
-
-    var heatmapLayer = new HeatmapOverlay(cfg);*/
 
     var heatmapLayer;
 
     var map = new L.Map('map', {
       center: new L.LatLng(40.7295134, -73.9964609),
       zoom: 14,
-      maxZoom: 18,
+      maxZoom: 17,
       minZoom: 12,
       layers: [baseLayer]
     });
 
-    /*var previousSSID = "";
-    function display(groups) {
-        var agg = [];
-
-        var lats = [];
-        var lngs = [];
-
-        for (lat in groups) {
-            lats.push(parseFloat(lat));
-            for (lng in groups[lat]) {
-                lngs.push(parseFloat(lng));
-                agg.push({
-                    lat: lat, lng: lng,
-                    level: AGGREGATION[$scope.params.aggregation](groups[lat][lng])
-                });
-
-            }
-        }
-
-        var data = {
-          max: -50,
-          min: -90,
-          data: agg
-        };
-
-        console.log(agg.length);
-
-        heatmapLayer.setData(data);
-
-        //Adjust map when SSID changes
-        //map.panTo(new L.LatLng(mean(lats), mean(lngs)));
-        if (previousSSID != $scope.params.ssid) {
-            latRange = range(lats);
-            lngRange = range(lngs);
-            map.fitBounds([
-                [latRange[1], lngRange[1]],
-                [latRange[0], lngRange[0]]
-            ]);
-        }
-
-        previousSSID = $scope.params.ssid;
-    }*/
 
     map.on('zoomstart', function() {
         window.stop();
@@ -138,40 +79,5 @@ angular
             $scope.execute();
         });
 
-        /*var params = {
-            ssid: $scope.params.ssid, //page_size: 5000,
-            columns: ['level', 'lat', 'lng']
-        };
-
-        var paramsString = JSON.stringify(params);
-
-        if (resultCache[paramsString]) {
-            display(resultCache[paramsString]);
-        } else {
-            wifiMappingAPI.query(params).then(function(res) {
-                console.log(res.length);
-                var groups = {};
-
-                var lat, lng;
-                for (var i = 0; i < res.length; i++) {
-                    lat = res[i].lat.toFixed(4);
-                    lng = res[i].lng.toFixed(4);
-
-                    if (!groups[lat]) {
-                        groups[lat] = {};
-                    }
-
-                    if (!groups[lat][lng]) {
-                        groups[lat][lng] = [];
-                    }
-
-                    groups[lat][lng].push(res[i].level);
-                }
-
-                resultCache[paramsString] = groups;
-
-                display(groups);
-            });
-        }*/
     };
 });
