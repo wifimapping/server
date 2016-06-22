@@ -21,7 +21,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASES = {
-    'mysql': {
+    'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': password.DB_NAME,
         'USER': password.DB_USER,
@@ -30,7 +30,7 @@ DATABASES = {
         'PORT': '',
 	'CONN_MAX_AGE': 900,
     },
-    'default': {
+    'postgres': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': PGpassword.DB_NAME,
         'USER': PGpassword.DB_USER,
@@ -181,3 +181,9 @@ LOGGING = {
 
 # Specify the default test runner.
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
+TILE_DIR = '/mnt/tiles'
+SSID_THRESHOLD = 50000
+ZOOM_MIN = 12
+ZOOM_MAX = 17
+AGGREGATION = ['mean', 'median', 'max']
