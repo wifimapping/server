@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>WiFind - Mapping Wi-Fi Coverage in NYC</title>
+    <title>WiFind - Mapping WiFi Coverage in NYC</title>
 
     <!-- Scripts for Heatmaps -->
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
@@ -47,7 +47,7 @@
                     <i class="fa fa-bars"></i>
                 </button>
                 <a class="navbar-brand page-scroll" href="#page-top">
-                    <span class="light">WiFind</span>
+                    <span class="light">WiFi<FONT COLOR="#BAC6E5">nd</FONT></span>
                 </a>
             </div>
 
@@ -83,9 +83,9 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-8 col-md-offset-2">
-                        <h1 class="brand-heading">WiFind</h1>
+                        <h1 class="brand-heading">WiFi<FONT COLOR="#BAC6E5">nd</FONT></h1>
                         <p class="intro-text">Mapping the Prevalence of Wi-Fi Coverage<br>throughout New York City.</p>
-                        <a href="#about" class="btn btn-circle page-scroll">
+                        <a href="#currentmap" class="btn btn-circle page-scroll">
                             <i class="fa fa-angle-double-down animated"></i>
                         </a>
                     </div>
@@ -106,14 +106,14 @@
          <form class="form-inline" id="seach-bar">
              <div class="form-group">
                  <label for="SSID"> Network Name: </label>
-                 <input type="text" class="form-control" ng-model='params.ssid' placeholder="NYU">
+                 <input type="text" class="form-control" ng-model='params.ssid' placeholder="nyu">
              </div>
              <div class="form-group">
-                 <label for="aggregation">Aggregation Function: </label>
+                 <label for="aggregation">Aggregation Function:</label>
                  <select name="aggregation" class="form-control" ng-model="params.aggregation">
-                 <option value="median" selected="selected">Median</option>
-                 <option value="mean">Mean</option>
-                 <option value="max">Max</option>
+                     <option value="median" selected="selected">Median</option>
+                     <option value="mean">Mean</option>
+                     <option value="max">Max</option>
                  </select>
              </div>
              <button class="btn btn-default" ng-click="execute()">Show Data</button>
@@ -146,9 +146,9 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2">
                 <h2>About WiFind</h2>
-                <p>This project seeks to visualize the prevalence of Wi-Fi coverage throughout all five boroughs of New York City in order to understand accessibility levels citywide.Using an Android mobile application, users can measure and record the signal strength of Wi-Fi networks around them as they move through the city.</p>
+                <p>This project seeks to visualize the prevalence of Wi-Fi coverage throughout New York City in order to understand accessibility levels citywide. Using an Android mobile application, users can measure and record the signal strength of Wi-Fi networks around them as they move through the city.</p>
                 <p>Our hope is that these readings can help inform a wide array of academic and social purposes, ranging from visualizing digital equality to finding the closest open Wi-Fi network.</p>
-                <p>The project team is from <a href="http://cusp.nyu.edu">NYU CUSP</a>, an university-wide research center focusing on urban systems and urban informatics. We aim to use data analytics to understand complex urban systems and ultimately improve quality of life for those living in cities throughout the world. </p>
+                <p>The project team is from <a href="http://cusp.nyu.edu">NYU CUSP</a>, a university-wide research center focusing on urban systems and urban informatics. We aim to use data analytics to understand complex urban systems and ultimately improve quality of life for those living in cities throughout the world. </p>
             </div>
         </div>
     </section>
