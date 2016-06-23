@@ -12,11 +12,16 @@
     <title>WiFind - Mapping WiFi Coverage in NYC</title>
 
     <!-- Scripts for Heatmaps -->
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-    <script src="bower_components/wifimapping-jsapi/src/wifimappingapi.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="js/index.js"></script>  
+    
+<!--  Replace with these 2 lines for Https 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css"/>
+-->
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>  
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+
     
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -26,6 +31,8 @@
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    
+    <!-- Delete Http before // for https -->
     <link href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
 
@@ -39,6 +46,8 @@
 </head>
 
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" ng-controller="Ctrl">
+   
+    <div id="map"></div>
 
     <!-- Navigation -->
     <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
@@ -60,16 +69,16 @@
                         <a href="#page-top"></a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#currentmap">The Map</a>
+                        <a class="page-scroll" href="#themap">THE MAP</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#gettingapp">Getting App</a>
+                        <a class="page-scroll" href="#gettingapp">GETTING APP</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#about">About</a>
+                        <a class="page-scroll" href="#about">ABOUT</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#contact">Contact</a>
+                        <a class="page-scroll" href="#contact">CONTACT</a>
                     </li>
                 </ul>
             </div>
@@ -80,98 +89,93 @@
 
     <!-- Intro Header -->
     <header class="intro">
-        <div class="intro-body">
+        <div class="intro-body"> 
             <div class="container">
                 <div class="row">
-                    <div class="col-md-8 col-md-offset-2">
-                        <h1 class="brand-heading">WiFi<FONT COLOR="#BAC6E5">nd</FONT></h1>
-                        <p class="intro-text">Mapping the Prevalence of Wi-Fi Coverage<br>throughout New York City.</p>
-                        <a href="#currentmap" class="btn btn-circle page-scroll">
-                            <i class="fa fa-angle-double-down animated"></i>
-                        </a>
-                    </div>
-                </div>
+                    <div class="col-lg-8 col-lg-offset-2">
+                     <form class="form-inline" id="seach-bar">
+                         <div class="form-group">
+                             <label for="SSID"> Network Name: </label>
+                             <input type="text" class="form-control" ng-model='params.ssid' placeholder="nyu">
+                         </div>
+                         <div class="form-group">
+                             <label for="aggregation">Aggregation Function:</label>
+                             <select name="aggregation" class="form-control" ng-model="params.aggregation">
+                                 <option value="median" selected="selected">Median</option>
+                                 <option value="mean">Mean</option>
+                                 <option value="max">Max</option>
+                             </select>
+                         </div>
+                         <button class="btn btn-default" ng-click="execute()">Show Data</button>
+                    </form>
+                    <img src="img/legend.png" class="img-fluid" width="100%">
+                    <figcaption class="figure-caption">Signal Intensity (dB)</figcaption>      
+                 </div>
+                </div>   
             </div>
         </div>
     </header>
-
-    <!-- Map Section -->
-     <section id="currentmap" class="container content-section text-center">
-         <div class="row">
-             <div class="col-lg-8 col-lg-offset-2">
-                 <h2>The Map</h2>
-                 <p>The map shows the intensity of Wi-Fi signal at various locations in New York City based on the current data we have collected. To use this map, simply type in the name of network you want to show then choose an aggregation function and click the "SHOW DATA" button.</p>
-                 <p>There are three aggregation functions available for choose. Choosing "Median" will show you the median value of signal intesity at each location. Likewise, choosing "Max" or "Average" will give you the maximum or average value of signal intesity at each location. </p>
-             </div>
-         </div>
-         <form class="form-inline" id="seach-bar">
-             <div class="form-group">
-                 <label for="SSID"> Network Name: </label>
-                 <input type="text" class="form-control" ng-model='params.ssid' placeholder="nyu">
-             </div>
-             <div class="form-group">
-                 <label for="aggregation">Aggregation Function:</label>
-                 <select name="aggregation" class="form-control" ng-model="params.aggregation">
-                     <option value="median" selected="selected">Median</option>
-                     <option value="mean">Mean</option>
-                     <option value="max">Max</option>
-                 </select>
-             </div>
-             <button class="btn btn-default" ng-click="execute()">Show Data</button>
-          </form>
-     <div id="map"></div>
-     <img src="img/legend.png" class="img-fluid" width="100%">
-     <figcaption class="figure-caption">Signal Intensity (dB)</figcaption>
-    </section>
     
+
+    <!-- Map-Intro Section -->
+    <section id="themap" class="content-section text-center">
+        <div class="container">
+            <div class="col-lg-8 col-lg-offset-2">
+                 <h2>The Map</h2>
+                 <p>The map shows the intensity of Wi-Fi signals at various locations in New York City based on the data collected so far. -90 (shwon in blue color) is the value for the poorest signal and -30 (shown in red color) is the value for the strongest signal. 
+                 <p>To use this map, simply type in the name of the network you wish to see, then choose an aggregation function and click the "SHOW DATA" button.</p>
+                 <p>There are three aggregation functions available to choose from. Choosing "Median" will show you the median value of signal intesities at each location. Similarly, choosing "Max" or "Average" will give you the maximum or average value of signal intesities at each location. </p>
+            </div>
+        </div>
+    </section>
+   
     
     
     <!-- App Section -->
     <section id="gettingapp" class="content-section text-center">
-        <div class="gettingapp-section">
             <div class="container">
                 <div class="col-lg-8 col-lg-offset-2">
                     <h2>Getting App</h2>
-                    <p>Our Android mobile application measures and records the signal strength of Wi-Fi networks around users as users move through the city. Using our application will not interfere any other processes in your Android device.</p>
-                    <p>Help us collect data by using our application! You can download our App in the following link.</p>
-                    <a href="https://build.phonegap.com/apps/2025209/download/android/?qr_key=rLwXCvJfGdJSHdKanQyE" class="btn btn-default btn-lg">Visit Download Page</a>
+                    <p>Our Android mobile application measures and records the signal strength of Wi-Fi networks around the users as they move through the city. Using our app will not interfere with any other processes on your Android device.</p>
+                    <p>Help us collect data by using our application! You can download our App using the following link.</p>
+                    <a href="https://build.phonegap.com/apps/2025209/download/android/?qr_key=rLwXCvJfGdJSHdKanQyE" class="btn btn-default btn-lg">Download App</a>
                 </div>
             </div>
-        </div>
     </section>    
     
         
     
     <!-- About Section -->
-    <section id="about" class="container content-section text-center">
-        <div class="row">
+    <section id="about" class="content-section text-center">
+        <div class="container">
             <div class="col-lg-8 col-lg-offset-2">
                 <h2>About WiFind</h2>
-                <p>This project seeks to visualize the prevalence of Wi-Fi coverage throughout New York City in order to understand accessibility levels citywide. Using an Android mobile application, users can measure and record the signal strength of Wi-Fi networks around them as they move through the city.</p>
+                <p>This project seeks to visualize the prevalence of Wi-Fi coverage throughout New York City in order to understand accessibility levels citywide. Using our Android mobile application, users can measure and record the signal strength of Wi-Fi networks around them as they move through the city.</p>
                 <p>Our hope is that these readings can help inform a wide array of academic and social purposes, ranging from visualizing digital equality to finding the closest open Wi-Fi network.</p>
-                <p>The project team is from <a href="http://cusp.nyu.edu">NYU CUSP</a>, a university-wide research center focusing on urban systems and urban informatics. We aim to use data analytics to understand complex urban systems and ultimately improve quality of life for those living in cities throughout the world. </p>
+                <p>The project team is from <a href="http://cusp.nyu.edu">NYU CUSP</a>, a university-wide research center focusing on urban systems and urban informatics. We aim to use data analytics to understand complex urban systems and ultimately improve the quality of life for those living in cities throughout the world. </p>
             </div>
         </div>
     </section>
     
  
     <!-- Contact Section -->
-    <section id="contact" class="container content-section text-center">
+    <section id="contact" class="content-section text-center">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2">
-                <h2>Contact</h2>
-                <p>Please email us to provide some feedback on our project, give us suggestions for new feautures. This is an open source project, feel free to check out our code at Github.</p>
-                <p><a href="mailto:wifindproject@nyu.edu">wifindproject@gmail.com</a>
-                </p>
-                <ul class="list-inline banner-social-buttons">
-                    <li>
-                        <a href="https://github.com/wifimapping" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
-                    </li>
-                </ul>
-            </div>
+            <div class="container">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <h2>Contact</h2>
+                    <p>Please email us to provide some feedback on our project, give us suggestions for new feautures. This is an open source project, feel free to check out our code at Github.</p>
+                    <p><a href="mailto:wifindproject@nyu.edu">wifindproject@gmail.com</a>
+                    </p>
+                    <ul class="list-inline banner-social-buttons">
+                        <li>
+                            <a href="https://github.com/wifimapping" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>     
         </div>
     </section>
-
 
     <!-- Footer -->
     <footer>

@@ -30,6 +30,13 @@ h6 {
     letter-spacing: 1px;
 }
 
+h7 {
+    margin: 0 0 35px;
+    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
 p {
     margin: 0 0 25px;
     font-size: 18px;
@@ -64,7 +71,7 @@ a:focus {
 .navbar-custom {
     margin-bottom: 0;
     border-bottom: 1px solid rgba(255,255,255,.3);
-    text-transform: uppercase;
+/*    text-transform: uppercase;*/
     font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
     background-color: #000;
 }
@@ -136,6 +143,7 @@ a:focus {
     .navbar-custom.top-nav-collapse {
         padding: 0;
         border-bottom: 1px solid rgba(255,255,255,.3);
+/*        Edit Here to make it transparent*/
         background: #000;
     }
 }
@@ -147,8 +155,9 @@ a:focus {
     padding: 100px 0;
     text-align: center;
     color: #fff;
-    background: url(../img/intro-bg.jpg) no-repeat bottom center scroll;
-    background-color: #000;
+/*    background: url(../img/intro-bg.jpg) no-repeat bottom center scroll transparent;*/
+/*    background-color: #000;*/
+    background-color: transparent;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
@@ -157,7 +166,8 @@ a:focus {
 
 .intro .intro-body {
     display: table-cell;
-    vertical-align: middle;
+    padding: 25px;
+    vertical-align: bottom;
 }
 
 .intro .intro-body .brand-heading {
@@ -259,7 +269,21 @@ a:focus {
 
 .content-section {
     padding-top: 100px;
+    background-color: black;
+    position: relative;
 }
+
+.mapintro-section {
+    padding-top: 10px;
+    background-color: black;
+    position: relative;
+}
+
+.map-section {
+    padding-top: 100px;
+    padding-bottom: 550px;
+}
+
 
 .download-section {
     width: 100%;
@@ -274,12 +298,16 @@ a:focus {
 }
 
 
+
 #map {
     width: 100%;
-    height: 600px;
-    margin-top: 10px;
+    height: 100%;
+    position: fixed;
+/*    margin-top: 10px;*/
     border: 2px black;
+    z-index: 0;
 }
+
 
 
 @media(min-width:767px) {
@@ -290,12 +318,14 @@ a:focus {
     .download-section {
         padding: 100px 0;
     }
-
+    
     #map {
-        height: 600px;
-        margin-top: 10px;
+        height: 100%;
+        margin-top: 0px;
     }
 }
+
+
 
 .btn {
     border-radius: 0;
@@ -345,6 +375,8 @@ ul.banner-social-buttons {
 
 footer {
     padding: 50px 0;
+    background-color: black;
+    position: relative;
 }
 
 footer p {

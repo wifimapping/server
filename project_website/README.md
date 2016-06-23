@@ -9,10 +9,9 @@ To do list:
 * Removed dependencies for Angular.js, Jquery, Heatmap.js, Wifimapping Api
 * Increased the height of map
 * Added static colorbar legend under the map
+* Map in the first page
 
 * * *
 
 ### Need to do: 
-* Try to replace header image with actual map in the page top
 * Preload heatmap for NYU 
-* Correct the footer

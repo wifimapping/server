@@ -47,8 +47,11 @@ angular
       zoom: 14,
       maxZoom: 17,
       minZoom: 12,
-      layers: [baseLayer]
+      scrollWheelZoom: false,  
+      layers: [baseLayer]  
     });
+    
+    map.zoomControl.setPosition('bottomright');
 
 
     map.on('zoomstart', function() {
