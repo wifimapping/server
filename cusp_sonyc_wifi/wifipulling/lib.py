@@ -95,7 +95,7 @@ def generateTiles(ssid):
 
 def generateGreyTiles():
     zoom_range=range(settings.ZOOM_MIN, settings.ZOOM_MAX+1)
-    boundingBox = getGrayBoundingBox(ssid)
+    boundingBox = getGreyBoundingBox()
     
     df = pd.DataFrame.from_records(
 	WifiScan.objects.values('lat', 'lng')
@@ -252,8 +252,9 @@ def generateGreyTile(x, y, zoom, params, allRecords=None):
 
     if len(df) == 0:
         return Image.new("RGBA", (256,256))
-
-    greayLayer = ImageDraw.point(df,'grey')
+	
+    print (df.head())
+    greyLayer = ImageDraw.point(df,'grey')
 
     timestamp = int(time.time())
 
