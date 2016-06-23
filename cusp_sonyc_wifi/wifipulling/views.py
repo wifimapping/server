@@ -36,7 +36,18 @@ def tile(request, zoom, x, y):
         ).save(response, "PNG")
 
     return response
+    
+def grayTile(request, zoom, x, y):
+    response = HttpResponse(content_type="image/png")
 
+    # Short circuit if the tiles exist
+    path = getGrayPath(zoom, x, y)
+    if os.path.exists(path):
+        Image.open(path).save(response, "PNG")
+    else:
+        generateTile(
+            int(x), int(y), int(zoom)).save(response, "PNG")
+    return response
 
 def index(request):
 
