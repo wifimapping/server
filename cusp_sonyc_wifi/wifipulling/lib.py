@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 from scipy.misc import imresize
 from matplotlib import cm
-from PIL import Image
+from PIL import Image, ImageDraw
 from django.db import connection
 from django.conf import settings
 
@@ -253,25 +253,6 @@ def generateGrayTile(x, y, zoom, params, allRecords=None):
     if len(df) == 0:
         return Image.new("RGBA", (256,256))
 
-    groups = df.groupby(('lat', 'lng'), as_index=False)
-    points = getattr(groups, agg_function)()
-
-    size = np.rint([(lngs2[1] - lngs2[0]) / .0001 + 1, (lats2[1] - lats2[0]) / .0001 + 1])
-
-    zi, xi, yi = np.histogram2d(
-        points['lng'], points['lat'], weights=points['level'],
-        bins=size, normed=False, range=[lngs2, lats2]
-    )
-
-    zi = np.ma.masked_equal(zi, 0)
-    zi = ((np.clip(zi, -90, -29) + 91) * 4.25).astype(int)
-
-    pixels = imresize(np.rot90(zi), size=(256,256), interp='nearest') / 255.0
-
-    color = np.uint8(cm.jet(pixels) * 255)
-
-    color[pixels == 0,3] = 0
-
     timestamp = int(time.time())
 
-    return Image.fromarray(color)
+    return Image.ImageDraw.Draw.point(df,'grey')
