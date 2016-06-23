@@ -37,7 +37,7 @@ def getBoundingBox(ssid):
     
 def getGreyBoundingBox():
     cursor = connection.cursor()
-    cursor.execute('SELECT FORMAT(MIN(lat),4), FORMAT(MAX(lat),4), FORMAT(MIN(lng),4), FORMAT(MAX(lng),4) from wifi_scan WHERE lat>0')
+    cursor.execute('SELECT DISTINCT FORMAT(MIN(lat),4), FORMAT(MAX(lat),4), FORMAT(MIN(lng),4), FORMAT(MAX(lng),4) from wifi_scan WHERE lat>0')
     r = cursor.fetchall()[0]
     return {
         'nw_corner': [r[1], r[2]],
