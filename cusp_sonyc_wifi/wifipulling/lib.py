@@ -35,9 +35,9 @@ def getBoundingBox(ssid):
         'se_corner': [r[0], r[3]]
     }
     
-def getGrayBoundingBox():
+def getGreyBoundingBox():
     cursor = connection.cursor()
-    cursor.execute('SELECT FORMAT(MIN(lat),4), FORMAT(MAX(lat),4), FORMAT(MIN(lng),4), FORMAT(MAX(lng),4) from wifi_scan WHERE lat>0')
+    cursor.execute('SELECT DISTINCT FORMAT(MIN(lat),4), FORMAT(MAX(lat),4), FORMAT(MIN(lng),4), FORMAT(MAX(lng),4) from wifi_scan WHERE lat>0')
     r = cursor.fetchall()[0]
     return {
         'nw_corner': [r[1], r[2]],
@@ -51,7 +51,7 @@ def getPath(ssid, agg_function, zoom, x, y):
     )
     return path
     
-def getGrayPath(zoom, x, y):
+def getGreyPath(zoom, x, y):
     path = os.path.join(
 	settings.GRAYTILE_DIR, 
 	str(zoom), str(x), '%s.png' % y
@@ -93,7 +93,7 @@ def generateTiles(ssid):
 
                     tile.save(path)
 
-def generateGrayTiles():
+def generateGreyTiles():
     zoom_range=range(settings.ZOOM_MIN, settings.ZOOM_MAX+1)
     boundingBox = getGrayBoundingBox(ssid)
     
@@ -103,20 +103,20 @@ def generateGrayTiles():
 
     for zoom in zoom_range:
         nw_corner = deg2num(
-            boundingBox['nw_corner'][0] + ZOOM_OFFSET[zoom],
-            boundingBox['nw_corner'][1] - ZOOM_OFFSET[zoom],
+            float(boundingBox['nw_corner'][0]) + float(ZOOM_OFFSET[zoom]),
+            float(boundingBox['nw_corner'][1]) - float(ZOOM_OFFSET[zoom]),
             zoom
         )
 
         se_corner = deg2num(
-            boundingBox['se_corner'][0] - ZOOM_OFFSET[zoom],
-            boundingBox['se_corner'][1] + ZOOM_OFFSET[zoom],
+            float(boundingBox['se_corner'][0]) - float(ZOOM_OFFSET[zoom]),
+            float(boundingBox['se_corner'][1]) + float(ZOOM_OFFSET[zoom]),
             zoom
         )
 
         for x in range(nw_corner[0], se_corner[0]+1):
             for y in range(nw_corner[1], se_corner[1]+1):
-                tile = generateGrayTile(x, y, zoom)
+                tile = generateGreyTile(x, y, zoom, df)
 
                 path = getGrayPath(zoom, x, y)
 		if not os.path.exists(os.path.dirname(path)):
@@ -212,7 +212,7 @@ def generateTile(x, y, zoom, params, allRecords=None):
 
     return Image.fromarray(color)
 
-def generateGrayTile(x, y, zoom, params, allRecords=None):
+def generateGreyTile(x, y, zoom, params, allRecords=None):
     timestamp = int(time.time())
     nw_corner = num2deg(x, y, zoom)
     se_corner = num2deg(x+1, y+1, zoom)
@@ -253,6 +253,8 @@ def generateGrayTile(x, y, zoom, params, allRecords=None):
     if len(df) == 0:
         return Image.new("RGBA", (256,256))
 
+    greayLayer = ImageDraw.point(df,'grey')
+
     timestamp = int(time.time())
 
-    return Image.ImageDraw.Draw.point(df,'grey')
+    return greyLayer

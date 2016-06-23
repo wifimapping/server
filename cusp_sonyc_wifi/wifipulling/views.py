@@ -37,11 +37,11 @@ def tile(request, zoom, x, y):
 
     return response
     
-def grayTile(request, zoom, x, y):
+def greyTile(request, zoom, x, y):
     response = HttpResponse(content_type="image/png")
 
     # Short circuit if the tiles exist
-    path = getGrayPath(zoom, x, y)
+    path = getGreyPath(zoom, x, y)
     if os.path.exists(path):
         Image.open(path).save(response, "PNG")
     else:
