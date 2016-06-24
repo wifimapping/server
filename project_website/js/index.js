@@ -58,7 +58,7 @@ angular
       }
     );
     
-    var nyuLayer = L.tileLayer(
+    var heatmapLayer = L.tileLayer(
           'http://capstone.cloudapp.net/wifipulling/tile/{z}/{x}/{y}/?ssid={ssid}&agg_function={agg_function}', {
             ssid: 'nyu',
             agg_function: 'median',
@@ -66,8 +66,6 @@ angular
             opacity: .5
           }
         );
-
-    var heatmapLayer;
 
     var map = new L.Map('map', {
       center: new L.LatLng(40.7295134, -73.9964609),
@@ -80,7 +78,7 @@ angular
     
     addControlPlaceholders(map);
     map.zoomControl.setPosition('verticalcenterleft');
-    map.addLayer(nyuLayer);
+    map.addLayer(heatmapLayer);
 
 
     map.on('zoomstart', function() {
