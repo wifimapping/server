@@ -16,6 +16,24 @@ function range(values) {
     return [values[10], values[values.length-10]];
 }
 
+	
+// Create additional Control placeholders
+function addControlPlaceholders(map) {
+    var corners = map._controlCorners,
+        l = 'leaflet-',
+        container = map._controlContainer;
+
+    function createCorner(vSide, hSide) {
+        var className = l + vSide + ' ' + l + hSide;
+
+        corners[vSide + hSide] = L.DomUtil.create('div', className, container);
+    }
+
+    createCorner('verticalcenter', 'left');
+    createCorner('verticalcenter', 'right');
+}
+
+
 var AGGREGATION = {
     median: median,
     max: max,
@@ -39,6 +57,15 @@ angular
         maxZoom: 17
       }
     );
+    
+    var nyuLayer = L.tileLayer(
+          'http://capstone.cloudapp.net/wifipulling/tile/{z}/{x}/{y}/?ssid={ssid}&agg_function={agg_function}', {
+            ssid: 'nyu',
+            agg_function: 'median',
+            maxZoom: 18,
+            opacity: .5
+          }
+        );
 
     var heatmapLayer;
 
@@ -47,8 +74,13 @@ angular
       zoom: 14,
       maxZoom: 17,
       minZoom: 12,
-      layers: [baseLayer]
+      scrollWheelZoom: false,  
+      layers: [baseLayer]  
     });
+    
+    addControlPlaceholders(map);
+    map.zoomControl.setPosition('verticalcenterleft');
+    map.addLayer(nyuLayer);
 
 
     map.on('zoomstart', function() {
