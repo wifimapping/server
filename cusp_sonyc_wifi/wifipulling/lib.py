@@ -37,7 +37,7 @@ def getBoundingBox(ssid):
     
 def getGreyBoundingBox():
     cursor = connection.cursor()
-    cursor.execute('SELECT DISTINCT FORMAT(MIN(lat),4), FORMAT(MAX(lat),4), FORMAT(MIN(lng),4), FORMAT(MAX(lng),4) from wifi_scan WHERE lat>0')
+    cursor.execute('SELECT FORMAT(MIN(lat),4), FORMAT(MAX(lat),4), FORMAT(MIN(lng),4), FORMAT(MAX(lng),4) from wifi_scan WHERE lat>0')
     r = cursor.fetchall()[0]
     return {
         'nw_corner': [r[1], r[2]],
@@ -53,9 +53,10 @@ def getPath(ssid, agg_function, zoom, x, y):
     
 def getGreyPath(zoom, x, y):
     path = os.path.join(
-	settings.GRAYTILE_DIR, 
+	settings.GREYTILE_DIR, 
 	str(zoom), str(x), '%s.png' % y
     )
+    print (path)
     return path
 
 def generateTiles(ssid):
@@ -97,9 +98,11 @@ def generateGreyTiles():
     zoom_range=range(settings.ZOOM_MIN, settings.ZOOM_MAX+1)
     boundingBox = getGreyBoundingBox()
     
-    df = pd.DataFrame.from_records(
+    df1 = pd.DataFrame.from_records(
 	WifiScan.objects.values('lat', 'lng')
     ).round(4)
+    df = df1.drop_duplicates(subset=['lat','lng'])
+    print(df.shape)
 
     for zoom in zoom_range:
         nw_corner = deg2num(
@@ -118,8 +121,10 @@ def generateGreyTiles():
             for y in range(nw_corner[1], se_corner[1]+1):
                 tile = generateGreyTile(x, y, zoom, df)
 
-                path = getGrayPath(zoom, x, y)
+                path = getGreyPath(zoom, x, y)
+		print (path)
 		if not os.path.exists(os.path.dirname(path)):
+                   print (os.path.dirname(path))
 		   os.makedirs(os.path.dirname(path))
 
                 tile.save(path)
@@ -193,7 +198,7 @@ def generateTile(x, y, zoom, params, allRecords=None):
 
 
     size = np.rint([(lngs2[1] - lngs2[0]) / .0001 + 1, (lats2[1] - lats2[0]) / .0001 + 1])
-
+    
     zi, xi, yi = np.histogram2d(
         points['lng'], points['lat'], weights=points['level'],
         bins=size, normed=False, range=[lngs2, lats2]
@@ -205,14 +210,13 @@ def generateTile(x, y, zoom, params, allRecords=None):
     pixels = imresize(np.rot90(zi), size=(256,256), interp='nearest') / 255.0
 
     color = np.uint8(cm.jet(pixels) * 255)
-
     color[pixels == 0,3] = 0
 
     timestamp = int(time.time())
 
     return Image.fromarray(color)
 
-def generateGreyTile(x, y, zoom, params, allRecords=None):
+def generateGreyTile(x, y, zoom, allRecords):
     timestamp = int(time.time())
     nw_corner = num2deg(x, y, zoom)
     se_corner = num2deg(x+1, y+1, zoom)
@@ -225,26 +229,18 @@ def generateGreyTile(x, y, zoom, params, allRecords=None):
 
     timestamp = int(time.time())
 
-    if allRecords is not None:
-        df = allRecords[
+    df = allRecords[
             (allRecords.lat >= lats2[0]) &
             (allRecords.lat <= lats2[1]) &
             (allRecords.lng >= lngs2[0]) &
             (allRecords.lng <= lngs2[1])
         ]
              
-    else:
-        records = WifiScan.objects.values('lat', 'lng')
+    timestamp = int(time.time())
 
-        timestamp = int(time.time())
+    timestamp = int(time.time())
 
-        df = pd.DataFrame.from_records(
-            records
-        )
-
-        timestamp = int(time.time())
-
-        df = df.round(4)
+    df = df.round(4)
 
 
     timestamp = int(time.time())
@@ -254,8 +250,24 @@ def generateGreyTile(x, y, zoom, params, allRecords=None):
         return Image.new("RGBA", (256,256))
 	
     print (df.head())
-    greyLayer = ImageDraw.point(df,'grey')
+    print (df.shape)
+
+
+    size = np.rint([(lngs2[1] - lngs2[0]) / .0001 + 1, (lats2[1] - lats2[0]) / .0001 + 1])
+    
+    zi, xi, yi = np.histogram2d(
+        df['lng'], df['lat'],
+        bins=size, normed=False, range=[lngs2, lats2]
+    )
+
+    zi = np.ma.masked_equal(zi, 0)
+    zi = ((np.clip(zi, -90, -29) + 91) * 4.25).astype(int)
+
+    pixels = imresize(np.rot90(zi), size=(256,256), interp='nearest') / 255.0
+
+    color = np.uint8(cm.gray(pixels) * 255)
+    color[pixels == 0,3] = 0
 
     timestamp = int(time.time())
 
-    return greyLayer
+    return Image.fromarray(color)

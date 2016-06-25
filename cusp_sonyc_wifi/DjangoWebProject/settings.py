@@ -183,7 +183,7 @@ LOGGING = {
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 TILE_DIR = '/mnt/tiles'
-GRAYTILE_DIR = '/mnt/grayTiles'
+GREYTILE_DIR = '/mnt/greyTiles'
 SSID_THRESHOLD = 50000
 ZOOM_MIN = 12
 ZOOM_MAX = 17
