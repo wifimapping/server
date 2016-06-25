@@ -4,6 +4,11 @@
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
 
+.modal-open .dropdown-menu {
+  z-index: 20000;
+}
+
+
 .leaflet-verticalcenter {
     position: absolute;
     top: 15%; /* possible because the placeholder's parent is the map */
@@ -49,6 +54,18 @@ h7 {
     font-weight: 700;
     letter-spacing: 1px;
 }
+
+h8 {
+    text-transform: uppercase;
+    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+#colorbar {
+    padding: 3px;
+}
+
 
 p {
     margin: 0 0 25px;
@@ -294,7 +311,6 @@ a:focus {
 .map-section {
     position: relative;
     height: 65%;
-/*    z-index: -1;*/
 }
 
 @media(min-width:768px) {
@@ -304,6 +320,19 @@ a:focus {
         z-index: -1;
     }
 }
+
+/*
+.map-title {
+    position: relative;
+    height: 4%;
+}
+
+@media(min-width:768px) {
+        .map-title {
+        height: 4%;
+    }
+}
+*/
 
 
 #search-bar{

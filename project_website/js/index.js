@@ -17,7 +17,7 @@ function range(values) {
 }
 
 	
-// Create additional Control placeholders
+// Create additional Control placeholders for Leaflet
 function addControlPlaceholders(map) {
     var corners = map._controlCorners,
         l = 'leaflet-',
