@@ -202,7 +202,6 @@ def generateTile(x, y, zoom, params, allRecords=None):
     zi = ((np.clip(zi, -90, -29) + 91) * 4.25).astype(int)
 
     pixels = imresize(np.rot90(zi), size=(256,256), interp='nearest') / 255.0
-    print (type(pixels))
     color = np.uint8(cm.jet(pixels) * 255)
     color[pixels == 0,3] = 0
 
@@ -252,11 +251,10 @@ def generateGreyTile(x, y, zoom, allRecords):
 
     zi = np.ma.masked_equal(zi, 0)
     zi = ((np.clip(zi, -90, -29) + 91) * 4.25).astype(int)
-    #print (df.shape)
     pixels = imresize(np.rot90(zi), size=(256,256), interp='nearest') / 255.0
 
-    pixels[pixels != 0] = 128
-    color = np.uint8(cm.gray(pixels))
+    #pixels[pixels != 0] = 128
+    color = np.uint8(cm.gray(pixels) * 128)
     color[pixels == 0,3] = 0
 
     timestamp = int(time.time())
