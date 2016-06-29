@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 from scipy.misc import imresize
 from matplotlib import cm
-from PIL import Image, ImageDraw
+from PIL import Image
 from django.db import connection
 from django.conf import settings
 
@@ -37,7 +37,7 @@ def getBoundingBox(ssid):
     
 def getGreyBoundingBox():
     cursor = connection.cursor()
-    cursor.execute('SELECT FORMAT(MIN(lat),4), FORMAT(MAX(lat),4), FORMAT(MIN(lng),4), FORMAT(MAX(lng),4) from wifi_scan WHERE lat>0')
+    cursor.execute('SELECT FORMAT(MIN(lat),4), FORMAT(MAX(lat),4), FORMAT(MIN(lng),4), FORMAT(MAX(lng),4) from wifi_scan WHERE lat>0 AND acc < 50')
     r = cursor.fetchall()[0]
     return {
         'nw_corner': [r[1], r[2]],
@@ -56,7 +56,6 @@ def getGreyPath(zoom, x, y):
 	settings.GREYTILE_DIR, 
 	str(zoom), str(x), '%s.png' % y
     )
-    print (path)
     return path
 
 def generateTiles(ssid):
@@ -102,7 +101,7 @@ def generateGreyTiles():
 	WifiScan.objects.values('lat', 'lng')
     ).round(4)
     df = df1.drop_duplicates(subset=['lat','lng'])
-    print(df.shape)
+    print (df.shape)
 
     for zoom in zoom_range:
         nw_corner = deg2num(
@@ -122,11 +121,8 @@ def generateGreyTiles():
                 tile = generateGreyTile(x, y, zoom, df)
 
                 path = getGreyPath(zoom, x, y)
-		print (path)
 		if not os.path.exists(os.path.dirname(path)):
-                   print (os.path.dirname(path))
-		   os.makedirs(os.path.dirname(path))
-
+		   os.makedirs(os.path.dirname(path))     
                 tile.save(path)
 
 
@@ -167,7 +163,7 @@ def generateTile(x, y, zoom, params, allRecords=None):
             (allRecords.lng >= lngs2[0]) &
             (allRecords.lng <= lngs2[1])
         ]
-             
+
     else:
         records = WifiScan.objects.filter(
             ssid=ssid,
@@ -186,7 +182,6 @@ def generateTile(x, y, zoom, params, allRecords=None):
 
         df = df.round(4)
 
-
     timestamp = int(time.time())
 
 
@@ -195,7 +190,6 @@ def generateTile(x, y, zoom, params, allRecords=None):
 
     groups = df.groupby(('lat', 'lng'), as_index=False)
     points = getattr(groups, agg_function)()
-
 
     size = np.rint([(lngs2[1] - lngs2[0]) / .0001 + 1, (lats2[1] - lats2[0]) / .0001 + 1])
     
@@ -208,7 +202,7 @@ def generateTile(x, y, zoom, params, allRecords=None):
     zi = ((np.clip(zi, -90, -29) + 91) * 4.25).astype(int)
 
     pixels = imresize(np.rot90(zi), size=(256,256), interp='nearest') / 255.0
-
+    print (type(pixels))
     color = np.uint8(cm.jet(pixels) * 255)
     color[pixels == 0,3] = 0
 
@@ -218,6 +212,7 @@ def generateTile(x, y, zoom, params, allRecords=None):
 
 def generateGreyTile(x, y, zoom, allRecords):
     timestamp = int(time.time())
+    print ("Zoom: ", zoom)
     nw_corner = num2deg(x, y, zoom)
     se_corner = num2deg(x+1, y+1, zoom)
 
@@ -234,13 +229,11 @@ def generateGreyTile(x, y, zoom, allRecords):
             (allRecords.lat <= lats2[1]) &
             (allRecords.lng >= lngs2[0]) &
             (allRecords.lng <= lngs2[1])
-        ]
-             
+        ]         
+    df = df.reset_index(drop=True)
     timestamp = int(time.time())
 
     timestamp = int(time.time())
-
-    df = df.round(4)
 
 
     timestamp = int(time.time())
@@ -248,9 +241,6 @@ def generateGreyTile(x, y, zoom, allRecords):
 
     if len(df) == 0:
         return Image.new("RGBA", (256,256))
-	
-    print (df.head())
-    print (df.shape)
 
 
     size = np.rint([(lngs2[1] - lngs2[0]) / .0001 + 1, (lats2[1] - lats2[0]) / .0001 + 1])
@@ -262,10 +252,11 @@ def generateGreyTile(x, y, zoom, allRecords):
 
     zi = np.ma.masked_equal(zi, 0)
     zi = ((np.clip(zi, -90, -29) + 91) * 4.25).astype(int)
-
+    #print (df.shape)
     pixels = imresize(np.rot90(zi), size=(256,256), interp='nearest') / 255.0
 
-    color = np.uint8(cm.gray(pixels) * 255)
+    pixels[pixels != 0] = 128
+    color = np.uint8(cm.gray(pixels))
     color[pixels == 0,3] = 0
 
     timestamp = int(time.time())
