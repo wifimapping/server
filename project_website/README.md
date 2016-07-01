@@ -23,3 +23,5 @@ To do list:
 ### Future Work: 
 
 * Autocomplete SSID field
+* Change color for grayscale
+* Add legend for grayscale

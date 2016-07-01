@@ -66,6 +66,13 @@ angular
             opacity: .5
           }
         );
+    
+    var greyLayer = L.tileLayer(
+          'http://capstone.cloudapp.net/wifipulling/greyTile/{z}/{x}/{y}', {
+            maxZoom: 18,
+            opacity: .5
+          }
+        );
 
     var map = new L.Map('map', {
       center: new L.LatLng(40.7295134, -73.9964609),
@@ -78,6 +85,7 @@ angular
     
     addControlPlaceholders(map);
     map.zoomControl.setPosition('verticalcenterleft');
+    map.addLayer(greyLayer);
     map.addLayer(heatmapLayer);
 
 
@@ -93,6 +101,15 @@ angular
                 $scope.execute();
             });
         }
+        
+//        greyLayer = L.tileLayer(
+//          'http://capstone.cloudapp.net/wifipulling/greyTile/{z}/{x}/{y}', {
+//            maxZoom: 18,
+//            opacity: .5
+//          }
+//        );
+        
+        map.addLayer(greyLayer);
 
         heatmapLayer = L.tileLayer(
           'http://capstone.cloudapp.net/wifipulling/tile/{z}/{x}/{y}/?ssid={ssid}&agg_function={agg_function}', {

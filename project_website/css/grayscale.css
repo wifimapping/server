@@ -311,6 +311,7 @@ a:focus {
 .map-section {
     position: relative;
     height: 65%;
+    z-index: -1;
 }
 
 @media(min-width:768px) {
