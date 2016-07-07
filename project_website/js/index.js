@@ -1,3 +1,20 @@
+// Create additional Control placeholders for Leaflet
+function addControlPlaceholders(map) {
+    var corners = map._controlCorners,
+        l = 'leaflet-',
+        container = map._controlContainer;
+
+    function createCorner(vSide, hSide) {
+        var className = l + vSide + ' ' + l + hSide;
+
+        corners[vSide + hSide] = L.DomUtil.create('div', className, container);
+    }
+
+    createCorner('verticalcenter', 'left');
+    createCorner('verticalcenter', 'right');
+}
+
+
 function median(values) {
     values.sort((a, b) => a - b);
     return (values[(values.length - 1) >> 1] + values[values.length >> 1]) / 2
@@ -15,24 +32,6 @@ function range(values) {
     values.sort((a, b) => a - b);
     return [values[10], values[values.length-10]];
 }
-
-	
-// Create additional Control placeholders for Leaflet
-function addControlPlaceholders(map) {
-    var corners = map._controlCorners,
-        l = 'leaflet-',
-        container = map._controlContainer;
-
-    function createCorner(vSide, hSide) {
-        var className = l + vSide + ' ' + l + hSide;
-
-        corners[vSide + hSide] = L.DomUtil.create('div', className, container);
-    }
-
-    createCorner('verticalcenter', 'left');
-    createCorner('verticalcenter', 'right');
-}
-
 
 var AGGREGATION = {
     median: median,
@@ -57,7 +56,7 @@ angular
         maxZoom: 17
       }
     );
-    
+
     var heatmapLayer = L.tileLayer(
           'http://capstone.cloudapp.net/wifipulling/tile/{z}/{x}/{y}/?ssid={ssid}&agg_function={agg_function}', {
             ssid: 'nyu',
@@ -67,7 +66,7 @@ angular
           }
         );
     
-    var greyLayer = L.tileLayer(
+    var greyLayer1 = L.tileLayer(
           'http://capstone.cloudapp.net/wifipulling/greyTile/{z}/{x}/{y}', {
             maxZoom: 18,
             opacity: .5
@@ -79,15 +78,15 @@ angular
       zoom: 14,
       maxZoom: 17,
       minZoom: 12,
-      scrollWheelZoom: false,  
-      layers: [baseLayer]  
+      scrollWheelZoom: false, 
+      layers: [baseLayer]
     });
-    
+
     addControlPlaceholders(map);
     map.zoomControl.setPosition('verticalcenterleft');
-    map.addLayer(greyLayer);
+    
     map.addLayer(heatmapLayer);
-
+    map.addLayer(greyLayer1);
 
     map.on('zoomstart', function() {
         window.stop();
@@ -102,13 +101,13 @@ angular
             });
         }
         
-//        greyLayer = L.tileLayer(
-//          'http://capstone.cloudapp.net/wifipulling/greyTile/{z}/{x}/{y}', {
-//            maxZoom: 18,
-//            opacity: .5
-//          }
-//        );
-        
+        greyLayer = L.tileLayer(
+          'http://capstone.cloudapp.net/wifipulling/greyTile/{z}/{x}/{y}', {
+            maxZoom: 18,
+            opacity: .5
+          }
+        );
+
         map.addLayer(greyLayer);
 
         heatmapLayer = L.tileLayer(

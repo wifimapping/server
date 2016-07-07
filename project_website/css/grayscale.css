@@ -310,13 +310,13 @@ a:focus {
 
 .map-section {
     position: relative;
-    height: 65%;
+    height: 66%;
     z-index: -1;
 }
 
 @media(min-width:768px) {
         .map-section {
-        height: 85%;
+        height: 84%;
         padding: 0;
         z-index: -1;
     }
@@ -337,12 +337,12 @@ a:focus {
 
 
 #search-bar{
-    height: 35%;
+    height: 34%;
     position: relative;
 }
 @media(min-width:767px) {
     #search-bar {
-        height: 15%;
+        height: 16%;
         margin-top: 0px;
     }
 }
