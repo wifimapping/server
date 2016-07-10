@@ -101,14 +101,12 @@ def generateGreyTiles():
 	WifiScan.objects.values('lat', 'lng')
     ).round(4)
     df = df1.drop_duplicates(subset=['lat','lng'])
-    print (df.shape)
-
     for zoom in zoom_range:
         nw_corner = deg2num(
             float(boundingBox['nw_corner'][0]) + float(ZOOM_OFFSET[zoom]),
             float(boundingBox['nw_corner'][1]) - float(ZOOM_OFFSET[zoom]),
             zoom
-        )
+        )  
 
         se_corner = deg2num(
             float(boundingBox['se_corner'][0]) - float(ZOOM_OFFSET[zoom]),
@@ -119,11 +117,11 @@ def generateGreyTiles():
         for x in range(nw_corner[0], se_corner[0]+1):
             for y in range(nw_corner[1], se_corner[1]+1):
                 tile = generateGreyTile(x, y, zoom, df)
-
-                path = getGreyPath(zoom, x, y)
-		if not os.path.exists(os.path.dirname(path)):
-		   os.makedirs(os.path.dirname(path))     
-                tile.save(path)
+                if tile != None:
+                    path = getGreyPath(zoom, x, y)
+		    if not os.path.exists(os.path.dirname(path)):
+		       os.makedirs(os.path.dirname(path))     
+                    tile.save(path)
 
 
 def num2deg(xtile, ytile, zoom):
@@ -232,31 +230,23 @@ def generateGreyTile(x, y, zoom, allRecords):
     df = df.reset_index(drop=True)
     timestamp = int(time.time())
 
-    timestamp = int(time.time())
+    if len(df) != 0:
+        #drawGreyTiles(df,lngs2,lats2)
 
-
-    timestamp = int(time.time())
-
-
-    if len(df) == 0:
-        return Image.new("RGBA", (256,256))
-
-
-    size = np.rint([(lngs2[1] - lngs2[0]) / .0001 + 1, (lats2[1] - lats2[0]) / .0001 + 1])
+        size = np.rint([(lngs2[1] - lngs2[0]) / .0001 + 1, (lats2[1] - lats2[0]) / .0001 + 1])
     
-    zi, xi, yi = np.histogram2d(
-        df['lng'], df['lat'],
-        bins=size, normed=False, range=[lngs2, lats2]
-    )
+        zi, xi, yi = np.histogram2d(
+            df['lng'], df['lat'],
+            bins=size, normed=False, range=[lngs2, lats2]
+        )  
 
-    zi = np.ma.masked_equal(zi, 0)
-    zi = ((np.clip(zi, -90, -29) + 91) * 4.25).astype(int)
-    pixels = imresize(np.rot90(zi), size=(256,256), interp='nearest') / 255.0
+        zi = np.ma.masked_equal(zi, 0)
+        zi = ((np.clip(zi, -90, -29) + 91) * 4.25).astype(int)
+        pixels = imresize(np.rot90(zi), size=(256,256), interp='nearest') / 255.0
 
-    #pixels[pixels != 0] = 128
-    color = np.uint8(cm.gray(pixels) * 128)
-    color[pixels == 0,3] = 0
+        color = np.uint8(cm.gray(pixels) * 165)
+        color[pixels == 0,3] = 0
 
-    timestamp = int(time.time())
+        timestamp = int(time.time())
 
-    return Image.fromarray(color)
+        return Image.fromarray(color)

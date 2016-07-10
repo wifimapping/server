@@ -68,7 +68,7 @@ angular
         greyLayer = L.tileLayer(
           'http://capstone.cloudapp.net/wifipulling/greyTile/{z}/{x}/{y}', {
             maxZoom: 18,
-            opacity: .7
+            opacity: .5
           }
         );
 
