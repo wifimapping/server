@@ -13,7 +13,6 @@
 
     <!-- Scripts for Heatmaps -->
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-    <script src="bower_components/wifimapping-jsapi/src/wifimappingapi.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="js/index.js"></script>  
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
@@ -39,6 +38,8 @@
 </head>
 
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" ng-controller="Ctrl">
+   
+    <div id="map"></div>
 
     <!-- Navigation -->
     <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
@@ -48,7 +49,7 @@
                     <i class="fa fa-bars"></i>
                 </button>
                 <a class="navbar-brand page-scroll" href="#page-top">
-                    <span class="light">WiFi<FONT COLOR="#BAC6E5">nd</FONT></span>
+                    <span class="light">WiFi<FONT COLOR="#acbbe3">nd</FONT></span>
                 </a>
             </div>
 
@@ -60,16 +61,19 @@
                         <a href="#page-top"></a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#currentmap">The Map</a>
+                        <a class="page-scroll" href="#currentmap">THE MAP</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#gettingapp">Getting App</a>
+                        <a class="page-scroll" href="#gettingapp">GETTING APP</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#about">About</a>
+                        <a class="page-scroll" href="#about">ABOUT</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#contact">Contact</a>
+                        <a class="page-scroll" href="#team">THE TEAM</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#contact">CONTACT</a>
                     </li>
                 </ul>
             </div>
@@ -80,113 +84,196 @@
 
     <!-- Intro Header -->
     <header class="intro">
-        <div class="intro-body">
+        <div class="intro-body"> 
             <div class="container">
                 <div class="row">
                     <div class="col-md-8 col-md-offset-2">
-                        <h1 class="brand-heading">WiFi<FONT COLOR="#BAC6E5">nd</FONT></h1>
+                        <h7 class="brand-heading">WiFi<FONT COLOR="#acbbe3">nd</FONT></h7>
                         <p class="intro-text">Mapping the Prevalence of Wi-Fi Coverage<br>throughout New York City.</p>
                         <a href="#currentmap" class="btn btn-circle page-scroll">
                             <i class="fa fa-angle-double-down animated"></i>
                         </a>
                     </div>
-                </div>
+                </div>   
             </div>
         </div>
     </header>
-
+    
     <!-- Map Section -->
-     <section id="currentmap" class="container content-section text-center">
-         <div class="row">
-             <div class="col-lg-8 col-lg-offset-2">
+<!--
+    <div id="maptitle" class="map-title text-center">
+        <div class="container">
+            <div class="col-lg-8 col-lg-offset-2">
                  <h2>The Map</h2>
-                 <p>The map shows the intensity of Wi-Fi signal at various locations in New York City based on the current data we have collected. To use this map, simply type in the name of network you want to show then choose an aggregation function and click the "SHOW DATA" button.</p>
-                 <p>There are three aggregation functions available to choose from. Choosing "Median" will show you the median value of signal intesities at each location. Similary, choosing "Max" or "Average" will give you the maximum or average value of signal intesities at each location. </p>
+            </div>
+        </div>
+    </div>
+-->
+    
+    <div id="currentmap" class="map-section text-center"></div>
+    
+    <div class="container text-center" id="search-bar">
+        <div class="row">
+             <div class="col-lg-8 col-lg-offset-2">
+                 <form class="form-inline">
+                     <div class="form-group">
+                         <h8 for="SSID" class="label"> Network Name: </h8>
+                         <input class="form-control" type="text" ng-model='params.ssid' placeholder="nyu" data-provide="typeahead">
+                     </div>
+                     <div class="form-group">
+                         <h8 for="aggregation" class="label">Aggregation Function:</h8>
+                         <select name="aggregation" class="form-control" ng-model="params.aggregation">
+                             <option value="median" selected="selected">Median</option>
+                             <option value="mean">Mean</option>
+                             <option value="max">Max</option>
+                         </select>
+                     </div>
+                     <button class="btn btn-default" ng-click="execute()">Show Data</button>
+                </form>
+                <img src="img/legend.png" class="img-fluid" width="100%" id="colorbar">
+                <h8 class="figure-caption">Signal Intensity (dB)</h8>
              </div>
          </div>
-         <form class="form-inline" id="seach-bar">
-             <div class="form-group">
-                 <label for="SSID"> Network Name: </label>
-                 <input type="text" class="form-control" ng-model='params.ssid' placeholder="nyu">
-             </div>
-             <div class="form-group">
-                 <label for="aggregation">Aggregation Function:</label>
-                 <select name="aggregation" class="form-control" ng-model="params.aggregation">
-                     <option value="median" selected="selected">Median</option>
-                     <option value="mean">Mean</option>
-                     <option value="max">Max</option>
-                 </select>
-             </div>
-             <button class="btn btn-default" ng-click="execute()">Show Data</button>
-          </form>
-     <div id="map"></div>
-     <img src="img/legend.png" class="img-fluid" width="100%">
-     <figcaption class="figure-caption">Signal Intensity (dB)</figcaption>
-    </section>
+        <h8><FONT COLOR="#A5A5A3">▇</FONT>: Area Mapped so far</h8>
+    </div>
     
+    
+    <!-- Map-Intro Section -->
+    <section id="mapintro" class="mapintro-section text-center">
+        <div class="container">
+            <div class="col-lg-8 col-lg-offset-2">
+                 <h2>The Map</h2>
+                 <p>The map shows the intensity of Wi-Fi signal at various locations in New York City based on the current data we have collected. -90 (shwon in blue color) is the value for the poorest signal and -30 (shown in red color) is the value for the strongest signal. 
+                 <p>To use this map, simply type in the name of network you want to show then choose an aggregation function and click the "SHOW DATA" button.</p>
+                 <p>There are three aggregation functions available to choose from. Choosing "Median" will show you the median value of signal intesities at each location. Similary, choosing "Max" or "Average" will give you the maximum or average value of signal intesities at each location.</p>
+            </div>
+        </div>
+    </section>
+   
     
     
     <!-- App Section -->
     <section id="gettingapp" class="content-section text-center">
-        <div class="gettingapp-section">
             <div class="container">
                 <div class="col-lg-8 col-lg-offset-2">
                     <h2>Getting App</h2>
                     <p>Our Android mobile application measures and records the signal strength of Wi-Fi networks around users as they move through the city. Using our application will not interfere with any other processes in your Android device.</p>
                     <p>Help us collect data by using our application! Click on the link below to download our App.</p>
-                    <a href="https://build.phonegap.com/apps/2025209/download/android/?qr_key=rLwXCvJfGdJSHdKanQyE" class="btn btn-default btn-lg">Visit Download Page</a>
+                    <a href="https://build.phonegap.com/apps/2025209/download/android/?qr_key=rLwXCvJfGdJSHdKanQyE" class="btn btn-default btn-lg">Download App</a>
                 </div>
             </div>
-        </div>
     </section>    
     
         
     
     <!-- About Section -->
-    <section id="about" class="container content-section text-center">
-        <div class="row">
+    <section id="about" class="content-section text-center">
+        <div class="container">
             <div class="col-lg-8 col-lg-offset-2">
                 <h2>About WiFind</h2>
                 <p>This project seeks to visualize the prevalence of Wi-Fi coverage throughout New York City to understand accessibility levels citywide. Using our Android mobile app, users can record the signal strength of Wi-Fi networks around them as they move through the city.</p>
                 <p>Our hope is to provide data that could be put to use in a wide array of academic and social purposes, ranging from visualizing digital equality to finding the closest open Wi-Fi network.</p>
-                <p>The project team is from <a href="http://cusp.nyu.edu">NYU CUSP</a>, a university-wide research center focusing on urban systems and urban informatics. We aim to use data analytics to understand complex urban systems and ultimately improve the quality of life of the people living in cities throughout the world. </p>
+                <p>The project team is from <a href="http://cusp.nyu.edu">NYU CUSP</a>, a university-wide research center focusing on urban systems and urban informatics. We aim to use data analytics to understand complex urban systems and ultimately improve the quality of life of the people living in cities throughout the world.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Team Section -->
+    <section id="team" class="content-section text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">The Team</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="team-member">
+                        <a href="http://jeremyneiman.com">
+                        <img src="img/team/jeremy.jpg" class="img-responsive img-circle" alt="Jeremy Neiman">
+                        <h4>Jeremy Neiman</h4>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="team-member">
+                        <a href="http://www.brunchline.co">
+                        <img src="img/team/dan.jpg" class="img-responsive img-circle" alt="Dan Quasney">
+                        <h4>Dan Quasney</h4>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="team-member">
+                        <a href="http://yunongcao.github.io/">
+                        <img src="img/team/yunong.jpg" class="img-responsive img-circle" alt="Yunong Cao">
+                        <h4>Yunong Cao</h4>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="team-member">
+                        <a href="https://github.com/tianyigu">
+                        <img src="img/team/tianyi.jpg" class="img-responsive img-circle" alt="Tianyi  Gu">
+                        <h4>Tianyi Gu</h4>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="team-member">
+                        <a href="https://github.com/AlanPolson">
+                        <img src="img/team/alan.jpg" class="img-responsive img-circle" alt="Alan Polson">
+                        <h4>Alan Polson</h4>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="team-member">
+                        <a href="https://github.com/ManushiM">
+                        <img src="img/team/manushi.jpg" class="img-responsive img-circle" alt="Manushi Majumdar">
+                        <h4>Manushi Majumdar</h4>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
     
  
     <!-- Contact Section -->
-    <section id="contact" class="container content-section text-center">
+    <section id="contact" class="content-section text-center">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2">
-                <h2>Contact</h2>
-                <p>Please email us to provide feedback on our project or suggestions for new feautures. This is an open source project, feel free to check out our code at Github.</p>
-                <p><a href="mailto:wifindproject@nyu.edu">wifindproject@gmail.com</a>
-                </p>
-                <ul class="list-inline banner-social-buttons">
-                    <li>
-                        <a href="https://github.com/wifimapping" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
-                    </li>
-                </ul>
-            </div>
+            <div class="container">
+                <div class="col-lg-8 col-lg-offset-2">
+                    <h2>Contact</h2>
+                    <p>Please email us to provide some feedback on our project, give us suggestions for new feautures. This is an open source project, feel free to check out our code at Github.</p>
+                    <p><a href="mailto:wifindproject@nyu.edu">wifindproject@gmail.com</a>
+                    </p>
+                    <ul class="list-inline banner-social-buttons">
+                        <li>
+                            <a href="https://github.com/wifimapping" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>     
         </div>
     </section>
-
 
     <!-- Footer -->
     <footer>
         <div class="container text-center">
             <p>This project emerged from 2015 capstone project team in <a href="http://cusp.nyu.edu">NYU CUSP</a>.</p>
-            <p>2016 Team: Dan Quasney, Tianyi Gu, Yunong Cao, Manushi Majumdar, Jeremy Neiman, Alan Polson</p>
-            <p>2015 Team: Nicholas Hagans, Ya Liu, Xinyi Qu, Liwen Tian</p>
             <p>Advisors: <a href="http://cusp.nyu.edu/people/charlie-mydlarz/">Dr. Charlie Mydlarz</a>, <a href="http://cusp.nyu.edu/people/justin-salamon/">Dr. Justin Salamon</a></p>
             <br>
             <p>Copyright &copy; WiFind 2016</p>
-        </div>
     </footer>
 
     <!-- jQuery -->
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    
+    <!-- TypeHead -->
+    <script src="js/typeahead.js"></script>
+    <script src="js/autocomplete.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
@@ -198,7 +285,7 @@
     <script src="js/grayscale.js"></script>
     
 
-
 </body>
 
+    
 </html>

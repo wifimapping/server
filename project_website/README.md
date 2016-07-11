@@ -3,16 +3,25 @@ This is a bootstrap page modified for project website.
 To do list:  
 
 ### Update:
+
 * Changed section order to Map-App-About-Contact
 * Fixed some terms (e.g. contact us-contact; SSID-netowrk name)
 * Fixed the link of download page
-* Removed dependencies for Angular.js, Jquery, Heatmap.js, Wifimapping Api
 * Increased the height of map
+*  *  *
+
+* Removed dependencies for Angular.js, Jquery, Heatmap.js, Wifimapping Api
+* Corrected some grammar mistakes
 * Added static colorbar legend under the map
+*  *  *
 
-* * *
+* Now use actual map as background of intro 
+* Fixed spacing issue on mobile devices
+* Preload heatmap for NYU
 
-### Need to do: 
-* Try to replace header image with actual map in the page top
-* Preload heatmap for NYU 
-* Correct the footer
+
+### Future Work: 
+
+* Autocomplete SSID field
+* Change color for grayscale
+* Add legend for grayscale
