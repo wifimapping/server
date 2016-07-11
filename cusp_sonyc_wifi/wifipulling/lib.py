@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 from scipy.misc import imresize
 from matplotlib import cm
-from PIL import Image
+from PIL import Image, ImageDraw
 from django.db import connection
 from django.conf import settings
 
@@ -65,7 +65,7 @@ def generateTiles(ssid):
     df = pd.DataFrame.from_records(
 	WifiScan.objects.filter(ssid=ssid).values('lat', 'lng', 'level')
     ).round(4)
-
+	
     for zoom in zoom_range:
         nw_corner = deg2num(
             boundingBox['nw_corner'][0] + ZOOM_OFFSET[zoom],
