@@ -209,7 +209,6 @@ def generateTile(x, y, zoom, params, allRecords=None):
 
 def generateGreyTile(x, y, zoom, allRecords):
     timestamp = int(time.time())
-    print ("Zoom: ", zoom)
     nw_corner = num2deg(x, y, zoom)
     se_corner = num2deg(x+1, y+1, zoom)
 
@@ -231,7 +230,6 @@ def generateGreyTile(x, y, zoom, allRecords):
     timestamp = int(time.time())
 
     if len(df) != 0:
-        #drawGreyTiles(df,lngs2,lats2)
 
         size = np.rint([(lngs2[1] - lngs2[0]) / .0001 + 1, (lats2[1] - lats2[0]) / .0001 + 1])
     
