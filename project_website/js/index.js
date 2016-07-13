@@ -15,7 +15,7 @@ function addControlPlaceholders(map) {
 }
 
 
-function median(values) {
+/*function median(values) {
     values.sort((a, b) => a - b);
     return (values[(values.length - 1) >> 1] + values[values.length >> 1]) / 2
 }
@@ -37,7 +37,7 @@ var AGGREGATION = {
     median: median,
     max: max,
     mean: mean
-};
+};*/
 
 
 angular
@@ -48,7 +48,7 @@ angular
         ssid: 'nyu'
     };
 
-    var resultCache = {};
+    //var resultCache = {};
 
     var baseLayer = L.tileLayer(
       'http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
@@ -69,7 +69,7 @@ angular
     var greyLayer1 = L.tileLayer(
           'http://capstone.cloudapp.net/wifipulling/greyTile/{z}/{x}/{y}', {
             maxZoom: 18,
-            opacity: .2
+            opacity: .3
           }
         );
 
@@ -79,14 +79,14 @@ angular
       maxZoom: 17,
       minZoom: 12,
       scrollWheelZoom: false, 
-      layers: [baseLayer]
+      layers: [baseLayer, greyLayer1, heatmapLayer]
     });
 
     addControlPlaceholders(map);
     map.zoomControl.setPosition('verticalcenterleft');
     
-    map.addLayer(heatmapLayer);
-    map.addLayer(greyLayer1);
+    //map.addLayer(heatmapLayer);
+    //map.addLayer(greyLayer1);
 
     map.on('zoomstart', function() {
         window.stop();
@@ -96,19 +96,19 @@ angular
         if (heatmapLayer) {
             map.removeLayer(heatmapLayer);
         } else {
-            map.on('zoomend', function() {
-                $scope.execute();
-            });
+            //map.on('zoomend', function() {
+            //    $scope.execute();
+            //});
         }
         
-        greyLayer = L.tileLayer(
+        /*greyLayer = L.tileLayer(
           'http://capstone.cloudapp.net/wifipulling/greyTile/{z}/{x}/{y}', {
             maxZoom: 18,
-            opacity: .2
+            opacity: .3
           }
         );
 
-        map.addLayer(greyLayer);
+        map.addLayer(greyLayer);*/
 
         heatmapLayer = L.tileLayer(
           'http://capstone.cloudapp.net/wifipulling/tile/{z}/{x}/{y}/?ssid={ssid}&agg_function={agg_function}', {
@@ -121,9 +121,9 @@ angular
 
         map.addLayer(heatmapLayer);
 
-        map.on('zoomend', function() {
+        /*map.on('zoomend', function() {
             $scope.execute();
-        });
+        });*/
 
     };
 });
