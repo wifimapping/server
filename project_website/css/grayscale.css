@@ -4,24 +4,6 @@
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
 
-.modal-open .dropdown-menu {
-  z-index: 20000;
-}
-
-
-.leaflet-verticalcenter {
-    position: absolute;
-    top: 15%; /* possible because the placeholder's parent is the map */
-    transform: translateY(-50%); /* using the CSS3 Transform technique */
-    padding-top: 10px;
-    padding-left: 10px;
-}
-
-.leaflet-verticalcenter .leaflet-control {
-    margin-bottom: 10px;
-}
-
-
 body {
     width: 100%;
     height: 100%;
@@ -47,7 +29,6 @@ h6 {
     font-weight: 700;
     letter-spacing: 1px;
 }
-
 h7 {
     margin: 0 0 35px;
     font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -56,16 +37,10 @@ h7 {
 }
 
 h8 {
-    text-transform: uppercase;
     font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 10px;
     letter-spacing: 1px;
 }
-
-#colorbar {
-    padding: 3px;
-}
-
 
 p {
     margin: 0 0 25px;
@@ -159,7 +134,7 @@ a:focus {
     color: #fff;
 }
 
-@media(min-width:768px) {
+@media(min-width:450px) {
     .navbar-custom {
         padding: 20px 0;
         border-bottom: 0;
@@ -173,7 +148,6 @@ a:focus {
     .navbar-custom.top-nav-collapse {
         padding: 0;
         border-bottom: 1px solid rgba(255,255,255,.3);
-/*        Edit Here to make it transparent*/
         background: #000;
     }
 }
@@ -185,9 +159,8 @@ a:focus {
     padding: 100px 0;
     text-align: center;
     color: #fff;
-/*    background: url(../img/intro-bg.jpg) no-repeat bottom center scroll transparent;*/
-/*    background-color: #000;*/
-    background-color: transparent;
+    background: url(../img/intro-bg.png) no-repeat bottom center scroll;
+    background-color: #000;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
@@ -298,53 +271,6 @@ a:focus {
 
 .content-section {
     padding-top: 100px;
-    background-color: black;
-    position: relative;
-}
-
-.mapintro-section {
-    padding-top: 10px;
-    background-color: black;
-    position: relative;
-}
-
-.map-section {
-    position: relative;
-    height: 66%;
-    z-index: -1;
-}
-
-@media(min-width:768px) {
-        .map-section {
-        height: 84%;
-        padding: 0;
-        z-index: -1;
-    }
-}
-
-/*
-.map-title {
-    position: relative;
-    height: 4%;
-}
-
-@media(min-width:768px) {
-        .map-title {
-        height: 4%;
-    }
-}
-*/
-
-
-#search-bar{
-    height: 34%;
-    position: relative;
-}
-@media(min-width:767px) {
-    #search-bar {
-        height: 16%;
-        margin-top: 0px;
-    }
 }
 
 .download-section {
@@ -360,32 +286,27 @@ a:focus {
 }
 
 
-
 #map {
-    float: left;
     width: 100%;
-    height: 100%;
-    position: fixed;
+    height: 400px;
+    margin-top: 10px;
     border: 2px black;
-    z-index: 0;
 }
+
 
 @media(min-width:767px) {
     .content-section {
-        padding-top: 250px;
+        padding-top: 170px;
     }
 
     .download-section {
         padding: 100px 0;
     }
-    
+
     #map {
-        height: 100%;
-        margin-top: 0px;
+        height: 530px;
     }
 }
-
-
 
 .btn {
     border-radius: 0;
@@ -451,8 +372,6 @@ ul.banner-social-buttons {
 
 footer {
     padding: 50px 0;
-    background-color: black;
-    position: relative;
 }
 
 footer p {
