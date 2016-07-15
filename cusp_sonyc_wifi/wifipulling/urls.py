@@ -3,5 +3,6 @@ from wifipulling import views
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
-    url(r'tile/(\d+)/(\d+)/(\d+)/', views.tile, name='tile')
+    url(r'tile/(\d+)/(\d+)/(\d+)/', views.tile, name='tile'),
+    url(r'greyTile/(\d+)/(\d+)/(\d+)/', views.greyTile)
 )

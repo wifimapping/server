@@ -14,7 +14,8 @@ import numpy as np
 from scipy.misc import imresize
 from matplotlib import cm
 from PIL import Image
-from lib import generateTile, getPath
+from lib import generateTile, getPath, getGreyPath
+from django.conf import settings
 
 col_name = {'idx':1, 'lat':1, 'lng':1, 'acc':1, 'altitude':1, 'time':1, 'device_mac':1, 'app_version':1, 'droid_version':1, 'device_model':1, 'ssid':1, 'bssid':1, 'caps':1, 'level':1, 'freq':1}
 
@@ -27,16 +28,28 @@ def tile(request, zoom, x, y):
     }
 
     # Short circuit if the tiles exist
-    path = getPath(params['ssid'], params['agg_function'], zoom, x, y)
-    if os.path.exists(path):
-        Image.open(path).save(response, "PNG")
+    parentPath = os.path.join(settings.TILE_DIR, params['ssid'])
+    if os.path.exists(parentPath):
+        path = getPath(params['ssid'], params['agg_function'], zoom, x, y)
+        if os.path.exists(path):
+            Image.open(path).save(response, "PNG")
+        else:
+            Image.new("RGBA", (256, 256)).save(response, "PNG")
     else:
         generateTile(
             int(x), int(y), int(zoom), params
         ).save(response, "PNG")
 
     return response
+    
+def greyTile(request, zoom, x, y):
+    response = HttpResponse(content_type="image/png")
 
+    # Short circuit if the tiles exist
+    path = getGreyPath(zoom, x, y)
+    if os.path.exists(path):
+        Image.open(path).save(response, "PNG")
+    return response
 
 def index(request):
 
