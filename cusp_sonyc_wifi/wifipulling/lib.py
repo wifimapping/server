@@ -227,6 +227,7 @@ def generateGreyTile(x, y, zoom, allRecords):
             (allRecords.lng <= lngs2[1])
         ]         
     df = df.reset_index(drop=True)
+    print('zoom',zoom)
     timestamp = int(time.time())
 
     if len(df) != 0:
@@ -242,7 +243,7 @@ def generateGreyTile(x, y, zoom, allRecords):
         zi = ((np.clip(zi, -90, -29) + 91) * 4.25).astype(int)
         pixels = imresize(np.rot90(zi), size=(256,256), interp='nearest') / 255.0
 
-        color = np.uint8(cm.gray(pixels) * 165)
+        color = np.uint8(cm.gray(pixels) * 225)
         color[pixels == 0,3] = 0
 
         timestamp = int(time.time())
