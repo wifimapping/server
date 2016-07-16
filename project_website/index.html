@@ -2,7 +2,7 @@
 <html lang="en" ng-app="Heatmap">
 
 <head>
-
+    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -87,7 +87,7 @@
                 <div class="row">
                     <div class="col-md-8 col-md-offset-2">
                         <h7 class="brand-heading">WiFi<font color="#BAC6E5">nd</font></h7>
-                        <p class="intro-text">WiFind visualizes the strength of Wi-Fi signals in New York City using data collected from our Android application which is displayed on the map below. <br>Enter a network name and click the ‘Show Data’ button to view all readings for that network.
+                        <p class="intro-text">WiFind visualizes the strength of Wi-Fi signals in New York City as displayed on the map below. <br>Enter a network name and click the ‘Show Data’ button to view all data for that network.</p>
                         <br>    
                         <a href="#currentmap" class="btn btn-circle page-scroll">
                         <i class="fa fa-angle-double-down animated"></i>
@@ -102,34 +102,42 @@
     <section id="currentmap" class="container content-section text-center">
          <div class="col-lg-8 col-lg-offset-2">
              <div class="row">
-             <h2>The Map</h2>
-        <form class="form-inline">
-             <div class="form-group">
-                 <h8 for="SSID" class="label"> Network Name: </h8>
-                 <input class="form-control" type="text" ng-model='params.ssid' placeholder="Enter Network Name">
+                 <h2>The Map</h2>
+                 <div id="toolbar">
+                     <form class="form-inline">
+                         <div class="form-group">
+                             <h8 for="SSID" class="label"> Network Name: </h8>
+                             <input class="form-control" type="text" ng-model='params.ssid' placeholder="Enter Network Name">
+                         </div>
+                         <div class="form-group">
+                             <h8 for="aggregation" class="label">Aggregation Function:</h8>
+                             <select name="aggregation" class="form-control" ng-model="params.aggregation">
+                                 <option value="median" selected="selected">Median</option>
+                                 <option value="mean">Mean</option>
+                                 <option value="max">Max</option>
+                             </select>
+                         </div>
+                         <button class="btn btn-default" ng-click="execute()">Show Data</button>
+                     </form>
+                </div>
              </div>
-             <div class="form-group">
-                 <h8 for="aggregation" class="label">Aggregation Function:</h8>
-                 <select name="aggregation" class="form-control" ng-model="params.aggregation">
-                     <option value="median" selected="selected">Median</option>
-                     <option value="mean">Mean</option>
-                     <option value="max">Max</option>
-                 </select>
-             </div>
-             <button class="btn btn-default" ng-click="execute()">Show Data</button>
-          </form>
+        </div>
+    </section>
+    
      <div id="map"></div>
-     <img src="img/legend.png" class="img-fluid" width="100%" id="colorbar">
-     <h8 class="figure-caption">SIGNAL STRENTH (dBm)</h8>
+     <section class="container map-section text-center">
+         <div class="col-lg-8 col-lg-offset-2">
+             <div class="row">
+                 <img src="img/legend.png" class="img-fluid" width="100%" id="colorbar">
+                 <h8 class="figure-caption">SIGNAL STRENTH (dBm)</h8>
      <br>
      <h8><FONT COLOR="#E1E1FF">▇</FONT>: LOCATIONS MAPPED</h8>
      <br><br>
-     <div class="row">
-         <p>The map above shows the intensity of Wi-Fi signals (collected in decibel-milliwatts, dBm) at various locations based on the current data we have collected. -90 dBm (shown in blue) is the value for the poorest signal and -30 dBm (shown in red) is the value for the strongest signal. 
-         <p>To use this map, simply type in the name of the network you want to show then choose an aggregation function and click the "SHOW DATA" button. You can then pan and zoom the map to see different areas or more detail.</p>
-         <p>There are three aggregation functions available to choose from. Choosing "Median" will show you the median value of signal strengths at each location. Similary, choosing "Max" or "Average" will give you the maximum or average value of signal strengths at each location.</p>
+        <div class="row">
+            <p>The map above shows the intensity of Wi-Fi signals (collected in decibel-milliwatts, dBm) at various locations based on the current data we have collected. -90 dBm (shown in blue) is the value for the poorest signal and -30 dBm (shown in red) is the value for the strongest signal. </p>
+            <p>To use this map, simply type in the name of the network you want to show then choose an aggregation function and click the "SHOW DATA" button. You can then pan and zoom the map to see different areas or more detail.</p>
+            <p>There are three aggregation functions available to choose from. Choosing "Median" will show you the median value of signal strengths at each location. Similary, choosing "Max" or "Average" will give you the maximum or average value of signal strengths at each location.</p>
        </div>
-         </div>
     </section>
          
     
@@ -230,7 +238,7 @@
                 </div>
                 <div class="col-sm-3">
                     <div class="team-member">
-                        <a href="http://cusp.nyu.edu/people/justin-salamon/">
+                        <a href="http://www.justinsalamon.com/">
                         <img src="img/team/justin.jpg" class="img-responsive img-circle" alt="Justin Salamon">
                         <h4>Justin Salamon</h4>
                         </a>
