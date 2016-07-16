@@ -107,7 +107,22 @@
                      <form class="form-inline">
                          <div class="form-group">
                              <h8 for="SSID" class="label"> Network Name: </h8>
-                             <input class="form-control" type="text" ng-model='params.ssid' placeholder="Enter Network Name">
+                             <input class="form-control" type="text" ng-model='params.ssid' placeholder="Enter Network Name" list="SSIDs" name="SSID">
+                             <datalist id="SSIDs">
+                                <option value="attwifi">
+                                <option value="CablewiFi">
+                                <option value="eduroam">
+                                <option value="nyu">
+                                <option value="nyuguest">
+                                <option value="NYU-ROAM3">
+                                <option value="optimumwifi">
+                                <option value="TWCWiFi">
+                                <option value="TWCWiFi-Passpoint">
+                                <option value="xfinitywifi">
+                                <option value="DowntownBrooklynWiFi_Fon">
+                                <option value="@smartwifi-open">
+                                <option value="@smartwifi-passpoint">
+                             </datalist>
                          </div>
                          <div class="form-group">
                              <h8 for="aggregation" class="label">Aggregation Function:</h8>
