@@ -4,24 +4,19 @@ To do list:
 
 ### Update:
 
-* Changed section order to Map-App-About-Contact
-* Fixed some terms (e.g. contact us-contact; SSID-netowrk name)
-* Fixed the link of download page
-* Increased the height of map
-*  *  *
-
-* Removed dependencies for Angular.js, Jquery, Heatmap.js, Wifimapping Api
-* Corrected some grammar mistakes
-* Added static colorbar legend under the map
-*  *  *
-
-* Now use actual map as background of intro 
-* Fixed spacing issue on mobile devices
-* Preload heatmap for NYU
+* Supports Safari (on both Mac and iOS) Now
+* Switched layout to preivous one
+* Changed intro text
+* Changed some text in map section
+* Decrease the top-margin of each section
+* Fixed typo in team section 
+* Added special thanks in footer
+* Changed placehold for Network Name input field
 
 
-### Future Work: 
 
-* Autocomplete SSID field
-* Change color for grayscale
-* Add legend for grayscale
+### Still Working on: 
+
+* Added dropdown Network Name for input field
+* Changed to a veritical colorbar legend
+* Debug hilighting issue for input field 
