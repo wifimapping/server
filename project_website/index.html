@@ -2,7 +2,7 @@
 <html lang="en" ng-app="Heatmap">
 
 <head>
-
+    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -43,7 +43,7 @@
     <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">Menu
                     <i class="fa fa-bars"></i>
                 </button>
                 <a class="navbar-brand page-scroll" href="#page-top">
@@ -87,7 +87,7 @@
                 <div class="row">
                     <div class="col-md-8 col-md-offset-2">
                         <h7 class="brand-heading">WiFi<font color="#BAC6E5">nd</font></h7>
-                        <p class="intro-text">WiFind visualizes the strength of Wi-Fi signals in New York City using data collected from our Android application which is displayed on the map below. <br>Enter a network name and click the ‘Show Data’ button to view all readings for that network.
+                        <p class="intro-text">WiFind visualizes the strength of Wi-Fi signals in New York City as displayed on the map below. <br>Enter a network name and click the ‘Show Data’ button to view all data for that network.</p>
                         <br>    
                         <a href="#currentmap" class="btn btn-circle page-scroll">
                         <i class="fa fa-angle-double-down animated"></i>
@@ -99,17 +99,34 @@
     </header>
 
     <!-- Map Section -->
-    <section id="currentmap" class="container content-section text-center">
+    <section id="currentmap" class="container map-section text-center">
          <div class="col-lg-8 col-lg-offset-2">
              <div class="row">
-             <h2>The Map</h2>
-        <form class="form-inline">
-             <div class="form-group">
-                 <h8 for="SSID" class="label"> Network Name: </h8>
-                 <input class="form-control" type="text" ng-model='params.ssid' placeholder="Enter Network Name">
+                 <h2>The Map</h2>
              </div>
+         </div>
+         <div class="row" id="toolbar">
+         <form class="form-inline">
              <div class="form-group">
-                 <h8 for="aggregation" class="label">Aggregation Function:</h8>
+                 <h8 for="SSID"> NETWORK NAME: </h8>
+                 <input class="form-control" type="text" ng-model='params.ssid' placeholder="Enter Network Name" list="SSIDs" name="SSID" onfocus="this.value='';">
+                 <datalist id="SSIDs">
+                    <option value="attwifi">
+                    <option value="CableWiFi">
+                    <option value="eduroam">
+                    <option value="nyu">
+                    <option value="nyuguest">
+                    <option value="NYU-ROAM3">
+                    <option value="optimumwifi">
+                    <option value="TWCWiFi">
+                    <option value="TWCWiFi-Passpoint">
+                    <option value="xfinitywifi">
+                    <option value="DowntownBrooklynWiFi_Fon">
+                    <option value="@smartfi-open">
+                    <option value="@smartfi-passpoint">
+                 </datalist>
+                 <h7>&nbsp;&nbsp;&nbsp;</h7>
+                 <h8 for="aggregation">AGGREGATION FUNCTION:</h8>
                  <select name="aggregation" class="form-control" ng-model="params.aggregation">
                      <option value="median" selected="selected">Median</option>
                      <option value="mean">Mean</option>
@@ -117,23 +134,31 @@
                  </select>
              </div>
              <button class="btn btn-default" ng-click="execute()">Show Data</button>
-          </form>
-     <div id="map"></div>
-     <img src="img/legend.png" class="img-fluid" width="100%" id="colorbar">
-     <h8 class="figure-caption">SIGNAL STRENTH (dBm)</h8>
-     <br>
-     <h8><FONT COLOR="#E1E1FF">▇</FONT>: LOCATIONS MAPPED</h8>
-     <br><br>
-     <div class="row">
-         <p>The map above shows the intensity of Wi-Fi signals (collected in decibel-milliwatts, dBm) at various locations based on the current data we have collected. -90 dBm (shown in blue) is the value for the poorest signal and -30 dBm (shown in red) is the value for the strongest signal. 
-         <p>To use this map, simply type in the name of the network you want to show then choose an aggregation function and click the "SHOW DATA" button. You can then pan and zoom the map to see different areas or more detail.</p>
-         <p>There are three aggregation functions available to choose from. Choosing "Median" will show you the median value of signal strengths at each location. Similary, choosing "Max" or "Average" will give you the maximum or average value of signal strengths at each location.</p>
-       </div>
-         </div>
+         </form>
+    </div>
+    </section>
+     
+    
+    <div id="map"></div>
+    <img src="img/legend.png" class="img-fluid" width="100%" id="colorbar">
+    <section class="container map-section text-center">
+        <div class="col-lg-8 col-lg-offset-2">
+             <div class="row">
+                 <h8 class="figure-caption">SIGNAL STRENTH (dBm)</h8>
+                 <br>
+                 <h8><FONT COLOR="#E1E1FF">▇</FONT>: LOCATIONS MAPPED</h8>
+             </div>
+        <br><br>
+        <div class="row">
+                <p>The map above shows the intensity of Wi-Fi signals (collected in decibel-milliwatts, dBm) at various locations based on the current data we have collected. -90 dBm (shown in blue) is the value for the poorest signal and -30 dBm (shown in red) is the value for the strongest signal. </p>
+                <p>To use this map, simply type in the name of the network you want to show then choose an aggregation function and click the "SHOW DATA" button. You can then pan and zoom the map to see different areas or more detail.</p>
+                <p>There are three aggregation functions available to choose from. Choosing "Median" will show you the median value of signal strengths at each location. Similary, choosing "Max" or "Average" will give you the maximum or average value of signal strengths at each location.</p>
+            </div>
+          </div>
     </section>
          
     
-    
+
     
     <!-- App Section -->
     <section id="gettingapp" class="content-section text-center">
@@ -150,7 +175,7 @@
         
     
     <!-- About Section -->
-    <section id="about" class="content-section text-center">
+    <section id="about" class="about-section text-center">
         <div class="container">
             <div class="col-lg-8 col-lg-offset-2">
                 <h2>About WiFind</h2>
@@ -163,7 +188,7 @@
     
     
     <!-- Team Section -->
-    <section id="team" class="content-section text-center">
+    <section id="team" class="team-section text-center">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
@@ -230,7 +255,7 @@
                 </div>
                 <div class="col-sm-3">
                     <div class="team-member">
-                        <a href="http://cusp.nyu.edu/people/justin-salamon/">
+                        <a href="http://www.justinsalamon.com/">
                         <img src="img/team/justin.jpg" class="img-responsive img-circle" alt="Justin Salamon">
                         <h4>Justin Salamon</h4>
                         </a>
@@ -266,21 +291,20 @@
     <footer>
         <div class="container text-center">
             <p>This project emerged from 2015 capstone project team in <a href="http://cusp.nyu.edu/">NYU CUSP</a>.</p>
-            <p>Advisors: <a href="http://cusp.nyu.edu/people/charlie-mydlarz/">Dr. Charlie Mydlarz</a>, <a href="http://cusp.nyu.edu/people/justin-salamon/">Dr. Justin Salamon</a></p>
+            <p>Advisors: <a href="http://cusp.nyu.edu/people/charlie-mydlarz/">Dr. Charlie Mydlarz</a>, <a href="http://www.justinsalamon.com/">Dr. Justin Salamon</a></p>
             <p>Special thanks to Hakan Cinar for his contribution to data collection</p>
             <br>
             <p>Copyright © WiFind 2016</p>
         </div>
     </footer>
+    
+    </body>
 
+    <!-- Dropdown -->
+    <script src="bower_components/webshim/js-webshim/minified/polyfiller.js"></script>
+    
     <!-- jQuery -->
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    
-    <!-- TypeHead -->
-<!--
-    <script src="js/typeahead.js"></script>
-    <script src="js/autocomplete.js"></script>
--->
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
@@ -291,4 +315,45 @@
     <!-- Custom Theme JavaScript -->
     <script src="js/grayscale.js"></script>
     
+
+    <script>
+        //webshim.setOptions('basePath', '/js-webshim/minified/shims/');
+
+        //request the features you need:
+        webshim.polyfill('forms es5');
+    </script>
+    
+    <script> 
+        $(function(){
+            // work with the HTML5 API
+            $('input:invalid').each(function(){
+                $(this).after( $.prop(this, 'validationMessage') );
+            });
+            // ...
+        });
+    </script>
+    
+    <!-- Webshim & Jquery bug fix -->
+    <script>
+        jQuery.swap = function( elem, options, callback, args ) {
+            var ret, name, old = {};
+            // Remember the old values, and insert the new ones
+            for ( name in options ) {
+                    old[ name ] = elem.style[ name ];
+                    elem.style[ name ] = options[ name ];
+            }
+
+            ret = callback.apply( elem, args || [] );
+
+            // Revert the old values
+            for ( name in options ) {
+                    elem.style[ name ] = old[ name ];
+            }
+            return ret;
+        };
+    </script>
+    
+    
 </html>
+
+
