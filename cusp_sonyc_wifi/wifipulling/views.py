@@ -1,6 +1,7 @@
-from django.shortcuts import render
+# Defines the controllers for the wifipulling component: tile, grey tile
+# and API.
 
-# Create your views here.
+from django.shortcuts import render
 from django.http import HttpResponse
 from ingestion.models import WifiScan
 import simplejson as json
@@ -19,7 +20,18 @@ from django.conf import settings
 
 col_name = {'idx':1, 'lat':1, 'lng':1, 'acc':1, 'altitude':1, 'time':1, 'device_mac':1, 'app_version':1, 'droid_version':1, 'device_model':1, 'ssid':1, 'bssid':1, 'caps':1, 'level':1, 'freq':1}
 
+# ## Heatmap Tile API
+# Return a heatmap tile for the given `zoom`, `x` and `y`.  The heatmap is the
+# signal strength (`level`) of the given network aggregated geospacially by
+# by squares created truncating the latitude and longitude of readings to
+# 4 decimal places.
+# The tile uses the
+# [slippy map tile standard](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames)
+# The request must
+# have the `ssid` and aggregation function (`agg_function`) specified in the
+# GET parameters.  `agg_function` defaults to median.
 def tile(request, zoom, x, y):
+    # Specify that the response will be a png image
     response = HttpResponse(content_type="image/png")
 
     params =  {
@@ -27,30 +39,42 @@ def tile(request, zoom, x, y):
         'agg_function': request.GET.get('agg_function', 'median')
     }
 
-    # Short circuit if the tiles exist
+    # Check if the ssid is one of the ssids that we prerender
     parentPath = os.path.join(settings.TILE_DIR, params['ssid'])
     if os.path.exists(parentPath):
+        # If it is, check to see if we have a tile
+        # If the tile exists, open it.  Otherwise return a transparent tile.
         path = getPath(params['ssid'], params['agg_function'], zoom, x, y)
         if os.path.exists(path):
             Image.open(path).save(response, "PNG")
         else:
             Image.new("RGBA", (256, 256)).save(response, "PNG")
     else:
+        # If the ssid is not precomputed, render on the fly
         generateTile(
             int(x), int(y), int(zoom), params
         ).save(response, "PNG")
 
     return response
-    
+
+# ## Grey Layer Tile API
+# Return the grey layer tile for the given `zoom`, `x` and `y`.  The grey layer
+# is a representation of everywhere that we have data and is displayed
+# underneath the heatmap.  This enables uses to differentiate between lack
+# of coverage of a Wi-Fi network and lack of coverage of our data.
+# All grey tiles are prerendered and saved to disk. This function simply returns
+# A tile if one exists for the given parameters.  See
+# [lib.generateGreyTile](lib.html#section-27) for details.
 def greyTile(request, zoom, x, y):
     response = HttpResponse(content_type="image/png")
 
-    # Short circuit if the tiles exist
     path = getGreyPath(zoom, x, y)
     if os.path.exists(path):
         Image.open(path).save(response, "PNG")
     return response
 
+# ## Wifipulling API
+# An API to query the database for raw data.
 def index(request):
 
     batch = 10 #default
