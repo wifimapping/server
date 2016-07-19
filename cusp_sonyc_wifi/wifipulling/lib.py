@@ -9,6 +9,7 @@ from matplotlib import cm
 from PIL import Image, ImageDraw
 from django.db import connection
 from django.conf import settings
+#np.set_printoptions(threshold=np.inf)
 
 ZOOM_OFFSET = {
     12: 1,
@@ -149,8 +150,8 @@ def generateTile(x, y, zoom, params, allRecords=None):
     lats = [min(nw_corner[0], se_corner[0]), max(nw_corner[0], se_corner[0])]
     lngs = [min(nw_corner[1], se_corner[1]), max(nw_corner[1], se_corner[1])]
 
-    lats2 = np.around([lats[0] - .0001, lats[1] + .0001], decimals=4)
-    lngs2 = np.around([lngs[0] - .0001, lngs[1] + .0001], decimals=4)
+    lats2 = np.around([lats[0] - .0002, lats[1] + .0002], decimals=4)
+    lngs2 = np.around([lngs[0] - .0002, lngs[1] + .0002], decimals=4)
 
     timestamp = int(time.time())
 
@@ -188,22 +189,68 @@ def generateTile(x, y, zoom, params, allRecords=None):
 
     groups = df.groupby(('lat', 'lng'), as_index=False)
     points = getattr(groups, agg_function)()
+    #print(points)
 
-    size = np.rint([(lngs2[1] - lngs2[0]) / .0001 + 1, (lats2[1] - lats2[0]) / .0001 + 1])
+    #size = np.rint([(lngs2[1] - lngs2[0]) / .0001 + 1, (lats2[1] - lats2[0]) / .0001 + 1])
+    bins = [
+        np.arange(lngs2[0]-.00005, lngs2[1]+.00005, .0001),
+        np.arange(lats2[0]-.00005, lats2[1]+.00005, .0001)
+    ]
+    print(bins)
     
     zi, xi, yi = np.histogram2d(
-        points['lng'], points['lat'], weights=points['level'],
-        bins=size, normed=False, range=[lngs2, lats2]
+        points['lng'], points['lat'], weights=points['level'], normed=False,
+        #bins=size, normed=False, range=[lngs2, lats2]
+        bins=bins
     )
+    #print(xi, yi)
 
     zi = np.ma.masked_equal(zi, 0)
     zi = ((np.clip(zi, -90, -29) + 91) * 4.25).astype(int)
+    zi = np.rot90(zi)
+    print(zi.shape)
+    #print(zi)
 
-    pixels = imresize(np.rot90(zi), size=(256,256), interp='nearest') / 255.0
-    color = np.uint8(cm.jet(pixels) * 255)
-    color[pixels == 0,3] = 0
+    s = 1024
+    #pixels = imresize(zi, size=(s,s), interp='nearest') / 255.0
+    #print(pixels)
+    #color = np.uint8(cm.jet(pixels) * 255)
+    #color[pixels == 0,3] = 0
+    color = np.uint8(cm.jet(zi/255.0)*255)
+    #color = imresize(color, size=(zi.shape[0]*10,zi.shape[1]*10), interp='nearest')
+    #color = imresize(color, size=(256,256), interp='nearest')
+    color = imresize(color, size=(s,s), interp='nearest')
+    #return Image.fromarray(color)
+    #return Image.fromarray(color)
 
-    timestamp = int(time.time())
+    #return Image.fromarray(color)
+
+    #x1 = (lngs[0]-lngs2[0])/(lngs2[1]-lngs2[0]+.0001)*s
+    #x2 = s-(lngs2[1]-lngs[1])/(lngs2[1]-lngs2[0]+.0001)*s
+    #y1 = (lats[0]-lats2[0])/(lats2[1]-lats2[0]+.0001)*s
+    #y2 = s-(lats2[1]-lats[1])/(lats2[1]-lats2[0]+.0001)*s
+    #x1 = (lngs[0]-lngs2[0]+.00005)/(lngs2[1]-lngs2[0]+.0001)*s
+    #x2 = s-(lngs2[1]-lngs[1]+.00005)/(lngs2[1]-lngs2[0]+.0001)*s
+    #y1 = (lats[0]-lats2[0]+.00005)/(lats2[1]-lats2[0]+.0001)*s
+    #y2 = s-(lats2[1]-lats[1]+.00005)/(lats2[1]-lats2[0]+.0001)*s
+    lat_len = zi.shape[0]*.0001
+    lng_len = zi.shape[1]*.0001
+    print(lat_len,lng_len)
+    #print((lngs[0]-(float(lngs2[0])-.00005))/lat_len)
+
+    x1 = ((lngs[0]-(lngs2[0]-.00005))/lng_len)*s
+    x2 = s-(((lngs2[1]+.00005) - lngs[1])/lng_len)*s
+
+    y1 = (((lats2[1]+.00005) - lats[1])/lat_len)*s
+    y2 = s-((lats[0]-(lats2[0]-.00005))/lat_len)*s
+    #color = color[y1:y2+1,x1:x2+1]
+    color = color[y1:y2+1,x1:x2+1]
+    print(color.shape)
+    color = imresize(color, size=(256,256), interp='nearest')
+
+    #print(lats,lats2,lngs,lngs2,x1,x2,y1,y2)
+    print(lngs,lngs2,x1,x2)
+    #timestamp = int(time.time())
 
     return Image.fromarray(color)
 
