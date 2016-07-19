@@ -21,6 +21,7 @@ def index(request):
         return HttpResponse("Hello!")
 
 # ## populate
+
 # parses the JSON payload from the Android application and inserts it
 # into the database one access point per record.
 # Params: request body from application

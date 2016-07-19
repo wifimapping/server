@@ -3,6 +3,7 @@
 from django.db import models
 
 # ## UniqueLocations
+
 # A model for unique locations - a particular lat/lon pair that appears in the
 # database.  Each pair will only have one entry in unique locations even
 # if there are many scans that fall into that location.
@@ -20,6 +21,7 @@ class UniqueLocations(models.Model):
         return " / " + str(self.lat) + " / " + str(self.lng)
 
 # ## TempUniqueLocations
+
 class TempUniqueLocations(models.Model):
     idx = models.AutoField(primary_key=True)
     lat = models.DecimalField(max_digits=8, decimal_places=4)
@@ -33,6 +35,7 @@ class TempUniqueLocations(models.Model):
         return " / " + str(self.lat) + " / " + str(self.lng)
 
 # ## WifiScan
+
 # The model for each wifi scan.  Each row will be a single access point
 # from a wifi scan.
 class WifiScan(models.Model):

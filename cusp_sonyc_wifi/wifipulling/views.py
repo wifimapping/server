@@ -21,6 +21,7 @@ from django.conf import settings
 col_name = {'idx':1, 'lat':1, 'lng':1, 'acc':1, 'altitude':1, 'time':1, 'device_mac':1, 'app_version':1, 'droid_version':1, 'device_model':1, 'ssid':1, 'bssid':1, 'caps':1, 'level':1, 'freq':1}
 
 # ## Heatmap Tile API
+
 # Return a heatmap tile for the given `zoom`, `x` and `y`.  The heatmap is the
 # signal strength (`level`) of the given network aggregated geospacially by
 # by squares created truncating the latitude and longitude of readings to
@@ -58,6 +59,7 @@ def tile(request, zoom, x, y):
     return response
 
 # ## Grey Layer Tile API
+
 # Return the grey layer tile for the given `zoom`, `x` and `y`.  The grey layer
 # is a representation of everywhere that we have data and is displayed
 # underneath the heatmap.  This enables uses to differentiate between lack
@@ -74,6 +76,7 @@ def greyTile(request, zoom, x, y):
     return response
 
 # ## Wifipulling API
+
 # An API to query the database for raw data.
 def index(request):
 

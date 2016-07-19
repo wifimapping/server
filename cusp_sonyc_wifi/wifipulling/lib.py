@@ -24,12 +24,17 @@ ZOOM_OFFSET = {
 }
 
 
+# ## getTopSSIDs
+
 # Return a list of ssids which have a number of datapoints greater than
 # `threshold`
 def getTopSSIDs(threshold=settings.SSID_THRESHOLD):
     cursor = connection.cursor()
     cursor.execute('SELECT ssid FROM wifi_scan GROUP BY ssid HAVING COUNT(*) > %s;' % (threshold))
     return [i[0] for i in cursor.fetchall() if i[0]]
+
+
+# ## getBoundingBox
 
 # Get the lat/lon bounding box of an SSID
 def getBoundingBox(ssid):
@@ -41,6 +46,9 @@ def getBoundingBox(ssid):
         'se_corner': [r[0], r[3]]
     }
 
+
+# ## getGreyBoundingBox
+
 # Get the bounding box for all the data
 def getGreyBoundingBox():
     cursor = connection.cursor()
@@ -51,6 +59,9 @@ def getGreyBoundingBox():
         'se_corner': [r[0], r[3]]
     }
 
+
+# ## getPath
+
 # Get the path of a heatmap tile
 def getPath(ssid, agg_function, zoom, x, y):
     path = os.path.join(
@@ -58,6 +69,9 @@ def getPath(ssid, agg_function, zoom, x, y):
 	str(zoom), str(x), '%s.png' % y
     )
     return path
+
+
+# ## getGreyPath
 
 # Get the path of a grey layer tile
 def getGreyPath(zoom, x, y):
@@ -67,7 +81,9 @@ def getGreyPath(zoom, x, y):
     )
     return path
 
+
 # ## generateTiles
+
 # generateTiles generates all the tiles for a given ssid from the minimum
 # zoom level to the maximum zoom level and saves them all to disk.
 def generateTiles(ssid):
@@ -106,7 +122,9 @@ def generateTiles(ssid):
                         os.makedirs(os.path.dirname(path))
                     tile.save(path)
 
+
 # ## generateGreyTiles
+
 # generateGreyTiles generates all the tiles for the grey layer from the minimum
 # zoom level to the maximum zoom level and saves them all to disk.
 def generateGreyTiles():
@@ -140,6 +158,9 @@ def generateGreyTiles():
                         os.makedirs(os.path.dirname(path))
                     tile.save(path)
 
+
+# ## num2deg
+
 # Convert slippy map `x`,`y`,`zoom` to the corresponding latitude/longitude pair.
 # Taken from the
 # [openstreetmap wiki](http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Python).
@@ -149,6 +170,9 @@ def num2deg(xtile, ytile, zoom):
     lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * ytile / n)))
     lat_deg = math.degrees(lat_rad)
     return (lat_deg, lon_deg)
+
+
+# ## deg2num
 
 # Convert latitude/longitude/zoom to a the corresponding slippy map `x` and `y`.
 # Taken from the
@@ -160,7 +184,9 @@ def deg2num(lat_deg, lon_deg, zoom):
   ytile = int((1.0 - math.log(math.tan(lat_rad) + (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)
   return (xtile, ytile)
 
+
 # ## generateTile
+
 # generateTile generates a single 256x256 pixel tile for the given parameters.
 # `x`, `y` and `zoom` define the geospacial location of the tile in the
 # slippy map standard. `params` is a dictionary containing the ssid and
@@ -259,7 +285,9 @@ def generateTile(x, y, zoom, params, allRecords=None):
 
     return Image.fromarray(color)
 
+
 # ## generateGreyTile
+
 def generateGreyTile(x, y, zoom, allRecords):
     timestamp = int(time.time())
     nw_corner = num2deg(x, y, zoom)
