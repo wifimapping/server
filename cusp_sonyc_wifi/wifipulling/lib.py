@@ -129,7 +129,6 @@ def generateTiles(ssid):
 # zoom level to the maximum zoom level and saves them all to disk.
 def generateGreyTiles():
     zoom_range=range(settings.ZOOM_MIN, settings.ZOOM_MAX+1)
-    boundingBox = getGreyBoundingBox()
 
     df1 = pd.DataFrame.from_records(
 	   WifiScan.objects.values('lat', 'lng')
@@ -137,21 +136,16 @@ def generateGreyTiles():
     df = df1.drop_duplicates(subset=['lat','lng'])
 
     for zoom in zoom_range:
-        nw_corner = deg2num(
-            float(boundingBox['nw_corner'][0]) + float(ZOOM_OFFSET[zoom]),
-            float(boundingBox['nw_corner'][1]) - float(ZOOM_OFFSET[zoom]),
-            zoom
-        )
+        generated = {}
 
-        se_corner = deg2num(
-            float(boundingBox['se_corner'][0]) - float(ZOOM_OFFSET[zoom]),
-            float(boundingBox['se_corner'][1]) + float(ZOOM_OFFSET[zoom]),
-            zoom
-        )
+        for row in df.iterrows():
+            loc = deg2num(row[1]['lat'], row[1]['lng'], zoom)
+            x,y = loc
+            if loc not in generated:
+                generated[loc] = True
 
-        for x in range(nw_corner[0], se_corner[0]+1):
-            for y in range(nw_corner[1], se_corner[1]+1):
                 tile = generateGreyTile(x, y, zoom, df)
+
                 if tile != None:
                     path = getGreyPath(zoom, x, y)
                     if not os.path.exists(os.path.dirname(path)):
@@ -308,7 +302,6 @@ def generateGreyTile(x, y, zoom, allRecords):
             (allRecords.lng <= lngs2[1])
         ]
     df = df.reset_index(drop=True)
-    print('zoom',zoom)
     timestamp = int(time.time())
 
     if len(df) != 0:

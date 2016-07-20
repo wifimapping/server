@@ -3,5 +3,6 @@ from wifipulling.lib import generateGreyTiles
 
 class Command(BaseCommand):
     help = 'Generates and saves tiles for all the locations'
-    
-generateGreyTiles()
+
+    def handle(self, *args, **options):    
+        generateGreyTiles()
