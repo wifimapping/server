@@ -296,8 +296,8 @@ def generateGreyTile(x, y, zoom, allRecords):
     lats = [min(nw_corner[0], se_corner[0]), max(nw_corner[0], se_corner[0])]
     lngs = [min(nw_corner[1], se_corner[1]), max(nw_corner[1], se_corner[1])]
 
-    lats2 = np.around([lats[0] - .0001, lats[1] + .0001], decimals=4)
-    lngs2 = np.around([lngs[0] - .0001, lngs[1] + .0001], decimals=4)
+    lats2 = np.around([lats[0] - .0002, lats[1] + .0002], decimals=4)
+    lngs2 = np.around([lngs[0] - .0002, lngs[1] + .0002], decimals=4)
 
     timestamp = int(time.time())
 
@@ -313,20 +313,36 @@ def generateGreyTile(x, y, zoom, allRecords):
 
     if len(df) != 0:
 
-        size = np.rint([(lngs2[1] - lngs2[0]) / .0001 + 1, (lats2[1] - lats2[0]) / .0001 + 1])
+        bins = [
+            np.arange(lngs2[0]-.00005, lngs2[1]+.00005, .0001),
+            np.arange(lats2[0]-.00005, lats2[1]+.00005, .0001)
+        ]
 
         zi, xi, yi = np.histogram2d(
             df['lng'], df['lat'],
-            bins=size, normed=False, range=[lngs2, lats2]
+            bins=bins, normed=False
         )
 
         zi = np.ma.masked_equal(zi, 0)
         zi = ((np.clip(zi, -90, -29) + 91) * 4.25).astype(int)
-        pixels = imresize(np.rot90(zi), size=(256,256), interp='nearest') / 255.0
+        zi = np.rot90(zi)
 
-        color = np.uint8(cm.gray(pixels) * 225)
-        color[pixels == 0,3] = 0
+        s = 1024
 
-        timestamp = int(time.time())
+
+        color = np.uint8(cm.gray(zi/225.0) * 225)
+        color = imresize(color, size=(s,s), interp='nearest')
+
+        lat_len = zi.shape[0]*.0001
+        lng_len = zi.shape[1]*.0001
+
+        x1 = ((lngs[0]-(lngs2[0]-.00005))/lng_len)*s
+        x2 = s-(((lngs2[1]+.00005) - lngs[1])/lng_len)*s
+
+        y1 = (((lats2[1]+.00005) - lats[1])/lat_len)*s
+        y2 = s-((lats[0]-(lats2[0]-.00005))/lat_len)*s
+
+        color = color[y1:y2+1,x1:x2+1]
+        color = imresize(color, size=(256,256), interp='nearest')
 
         return Image.fromarray(color)
