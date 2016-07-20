@@ -10,18 +10,7 @@ from matplotlib import cm
 from PIL import Image, ImageDraw
 from django.db import connection
 from django.conf import settings
-
-# TODO: Remove ZOOM_OFFSET
-# Additional padding around the bounding box used to prerender tiles
-ZOOM_OFFSET = {
-    12: 1,
-    13: .5,
-    14: .2,
-    15: .11,
-    16: .06,
-    17: .03,
-    18: .02
-}
+from django.db.models import Max
 
 
 # ## getTopSSIDs
@@ -32,32 +21,6 @@ def getTopSSIDs(threshold=settings.SSID_THRESHOLD):
     cursor = connection.cursor()
     cursor.execute('SELECT ssid FROM wifi_scan GROUP BY ssid HAVING COUNT(*) > %s;' % (threshold))
     return [i[0] for i in cursor.fetchall() if i[0]]
-
-
-# ## getBoundingBox
-
-# Get the lat/lon bounding box of an SSID
-def getBoundingBox(ssid):
-    cursor = connection.cursor()
-    cursor.execute('SELECT MIN(lat), MAX(lat), MIN(lng), MAX(lng) from wifi_scan WHERE ssid="%s" AND acc < 50' % (ssid))
-    r = cursor.fetchall()[0]
-    return {
-        'nw_corner': [r[1], r[2]],
-        'se_corner': [r[0], r[3]]
-    }
-
-
-# ## getGreyBoundingBox
-
-# Get the bounding box for all the data
-def getGreyBoundingBox():
-    cursor = connection.cursor()
-    cursor.execute('SELECT FORMAT(MIN(lat),4), FORMAT(MAX(lat),4), FORMAT(MIN(lng),4), FORMAT(MAX(lng),4) from wifi_scan WHERE lat>0 AND acc < 50')
-    r = cursor.fetchall()[0]
-    return {
-        'nw_corner': [r[1], r[2]],
-        'se_corner': [r[0], r[3]]
-    }
 
 
 # ## getPath
@@ -87,40 +50,35 @@ def getGreyPath(zoom, x, y):
 # generateTiles generates all the tiles for a given ssid from the minimum
 # zoom level to the maximum zoom level and saves them all to disk.
 def generateTiles(ssid):
+    print("generateTiles",ssid)
     zoom_range=range(settings.ZOOM_MIN, settings.ZOOM_MAX+1)
-    boundingBox = getBoundingBox(ssid)
-
+        
     df = pd.DataFrame.from_records(
-        WifiScan.objects.filter(ssid=ssid).values('lat', 'lng', 'level')
+        WifiScan.objects.filter(ssid=ssid).values('lat', 'lng', 'time').annotate(level=Max('level'))
     ).round(4)
 
+    unique = df.drop_duplicates(subset=['lat', 'lng'])
+
+
     for zoom in zoom_range:
-        # Get the corners of the bounding box for this zoom range
-        nw_corner = deg2num(
-            boundingBox['nw_corner'][0] + ZOOM_OFFSET[zoom],
-            boundingBox['nw_corner'][1] - ZOOM_OFFSET[zoom],
-            zoom
-        )
+        generated = {}
 
-        se_corner = deg2num(
-            boundingBox['se_corner'][0] - ZOOM_OFFSET[zoom],
-            boundingBox['se_corner'][1] + ZOOM_OFFSET[zoom],
-            zoom
-        )
+        for row in unique.iterrows():
+            loc = deg2num(row[1]['lat'], row[1]['lng'], zoom)
+            x,y = loc
+            if loc not in generated:
+                generated[loc] = True
 
-        # For every `x` and `y` in the bounding box generate a tile
-        for x in range(nw_corner[0], se_corner[0]+1):
-            for y in range(nw_corner[1], se_corner[1]+1):
-                for agg_function in settings.AGGREGATION:
-                    tile = generateTile(x, y, zoom, {
-                        'ssid': ssid,
-                        'agg_function': agg_function
-                    }, df)
+	        for agg_function in settings.AGGREGATION:
+	            tile = generateTile(x, y, zoom, {
+		        'ssid': ssid,
+		        'agg_function': agg_function
+	            }, df)
 
-                    path = getPath(ssid, agg_function, zoom, x, y)
-                    if not os.path.exists(os.path.dirname(path)):
-                        os.makedirs(os.path.dirname(path))
-                    tile.save(path)
+	            path = getPath(ssid, agg_function, zoom, x, y)
+	            if not os.path.exists(os.path.dirname(path)):
+		        os.makedirs(os.path.dirname(path))
+	            tile.save(path)
 
 
 # ## generateGreyTiles
@@ -220,7 +178,8 @@ def generateTile(x, y, zoom, params, allRecords=None):
             ssid=ssid,
             lat__gte=lats2[0], lat__lte=lats2[1],
             lng__gte=lngs2[0], lng__lte=lngs2[1],
-        ).values('lat', 'lng', 'level')
+        ).values('lat', 'lng', 'time').annotate(level=Max('level'))
+        #).values('lat', 'lng', 'level')
 
         df = pd.DataFrame.from_records(
             records
