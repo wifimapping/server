@@ -229,7 +229,7 @@ def index(request):
                 list_name = q_colname.split('|')
                 args = []
                 for name in list_name:
-                    if name in col_name:
+                    if name in col_name and name != 'device_mac':
                         args.append(name)
                 if (is_distinct == 1):
                     tem=query_set.values(*args).distinct()
