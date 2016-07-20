@@ -231,8 +231,8 @@ def generateGreyTile(x, y, zoom, allRecords):
     lats = [min(nw_corner[0], se_corner[0]), max(nw_corner[0], se_corner[0])]
     lngs = [min(nw_corner[1], se_corner[1]), max(nw_corner[1], se_corner[1])]
 
-    lats2 = np.around([lats[0] - .0001, lats[1] + .0001], decimals=4)
-    lngs2 = np.around([lngs[0] - .0001, lngs[1] + .0001], decimals=4)
+    lats2 = np.around([lats[0] - .0002, lats[1] + .0002], decimals=4)
+    lngs2 = np.around([lngs[0] - .0002, lngs[1] + .0002], decimals=4)
 
     timestamp = int(time.time())
 
