@@ -1,3 +1,5 @@
+# Controller for the ingestion API.
+
 from django.shortcuts import render
 from django.http import HttpResponse
 from ingestion.models import WifiScan
@@ -5,6 +7,8 @@ from ingestion.models import UniqueLocations
 import simplejson as json
 from django.views.decorators.csrf import csrf_exempt
 
+# The ingestion API only has a single endpoint, the index.
+# calls [`populate`](#section-3) when a POST body is included in the request.
 @csrf_exempt
 def index(request):
     if request.method == 'POST':
@@ -16,12 +20,13 @@ def index(request):
     else:
         return HttpResponse("Hello!")
 
+# ## populate
 
+# parses the JSON payload from the Android application and inserts it
+# into the database one access point per record.
+# Params: request body from application
+# Returns: "1" if successful upload, error message otherwise.
 def populate(info):
-    """ parses the JSON payload from the Android application and inserts it
-    into the database one access point per record.
-    Params: request body from application
-    Returns: "1" if successful upload, error message otherwise. """
 
     # convert everything to unicode before loading it as json
     # to avoid odd characters and load in json format. if error
@@ -33,10 +38,10 @@ def populate(info):
         return "Invalid JSON"
 
     access_points = list()
-    
+
     # there should be only one main key in scan ("scans")
     for mainkey in scan:
- 
+
         # check that the scan array contains information and send error
 	# and send error message if it does not
         if (len(scan[mainkey]) < 1):
@@ -52,14 +57,14 @@ def populate(info):
 
 	    # to circumvent type errors
             try:
-		
+
 		# iterate through each key in the current dictionary
                 for key in scan[mainkey][i]:
 
 		    # check if the value of the key is a list (only readings
 		    # will be a list)
                     if isinstance(scan[mainkey][i][key],list):
-                        
+
 			# if a list, iterate through the list
                         for j in range(0,len(scan[mainkey][i][key])):
                             items = list()
@@ -90,7 +95,7 @@ def populate(info):
 
 	    # iterate through every element of the readings list
             for k in range(0, len(readings)):
-		
+
 		# a dictionary of the measurements
                 measurement_dict = dict()
 
