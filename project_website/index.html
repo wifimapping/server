@@ -109,8 +109,9 @@
          <form class="form-inline">
              <div class="form-group">
                  <h8 for="SSID"> NETWORK NAME: </h8>
-                 <input class="form-control" type="text" ng-model='params.ssid' placeholder="Enter Network Name" list="SSIDs" name="SSID" onfocus="this.value='';">
+                 <input id="ssid-search" class="form-control" type="text" ng-model='params.ssid' placeholder="Enter Network Name" list="SSIDs" name="SSID" onfocus="this.value='';">
                  <datalist id="SSIDs">
+                    <option value="Known Open Wi-Fi">
                     <option value="attwifi">
                     <option value="CableWiFi">
                     <option value="eduroam">

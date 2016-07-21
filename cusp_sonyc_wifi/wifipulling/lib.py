@@ -52,9 +52,19 @@ def getGreyPath(zoom, x, y):
 def generateTiles(ssid):
     print("generateTiles",ssid)
     zoom_range=range(settings.ZOOM_MIN, settings.ZOOM_MAX+1)
-        
+    
+    if ssid == "Known Open Wi-Fi":
+        f = WifiScan.objects.filter(ssid__in=[
+            '#flatiron free wifi', '.freewifibysurface', '@smartfi-open', 'attwifi', 
+            'bryantpark.org', 'CableWiFi', 'cablewifi', 'DowntownBrooklynWiFi_Fon', 
+            'linknyc free wi-fi', 'Metrotech', 'optimumwifi', 'TWCWiFi', 'twcwifi', 
+            'usp park wifi', 'xfinitywifi'
+        ])
+    else:
+        f = WifiScan.objects.filter(ssid=ssid)
+
     df = pd.DataFrame.from_records(
-        WifiScan.objects.filter(ssid=ssid).values('lat', 'lng', 'time').annotate(level=Max('level'))
+        f.values('lat', 'lng', 'time').annotate(level=Max('level'))
     ).round(4)
 
     unique = df.drop_duplicates(subset=['lat', 'lng'])

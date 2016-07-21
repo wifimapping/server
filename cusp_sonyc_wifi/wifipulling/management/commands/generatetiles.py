@@ -12,6 +12,7 @@ class Command(BaseCommand):
             ssids = options['ssids']
         else:
             ssids =  getTopSSIDs()
+            ssids.append('Known Open Wi-Fi')
 
         for ssid in ssids:
             generateTiles(ssid)

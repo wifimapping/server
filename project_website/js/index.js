@@ -45,7 +45,7 @@ angular
 .controller('Ctrl', function($scope) {
     $scope.params = {
         aggregation: 'median',
-        ssid: 'nyu'
+        ssid: 'Known Open Wi-Fi'
     };
 
     //var resultCache = {};
@@ -59,7 +59,7 @@ angular
 
     var heatmapLayer = L.tileLayer(
           'http://capstone.cloudapp.net/wifipulling/tile/{z}/{x}/{y}/?ssid={ssid}&agg_function={agg_function}', {
-            ssid: 'nyu',
+            ssid: 'Known Open Wi-Fi',
             agg_function: 'median',
             maxZoom: 18,
             opacity: .5
@@ -74,8 +74,8 @@ angular
         );
 
     var map = new L.Map('map', {
-      center: new L.LatLng(40.7295134, -73.9964609),
-      zoom: 14,
+      center: new L.LatLng(40.7155134, -73.9964609),
+      zoom: 13,
       maxZoom: 17,
       minZoom: 12,
       scrollWheelZoom: false, 
