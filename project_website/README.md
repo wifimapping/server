@@ -1,8 +1,6 @@
-# WiFind Project Website Demo
+Find Project Website Demo
 This is a bootstrap page modified for project website.  
 To do list:  
-
-<<<<<<< HEAD
 
 ### Update:
 
@@ -11,27 +9,8 @@ To do list:
 * Realized auto clearing input field
 * Enabled dropdown on mobile (Double click input field)
 * Added "Menu" text in Navigation Bar for narrow screens
-=======
-### Update:
 
-* Switched layout to preivous one
-* Changed intro text
-* Changed some text in map section
-* Decrease the top-margin of each section
-* Fixed typo in team section 
-* Added special thanks in footer
-* Changed placehold for Network Name input field
+### To do: 
 
-
->>>>>>> ManushiM-patch-grayTile
-
-### Still Working on: 
-
-<<<<<<< HEAD
-### Still Working on: 
-
-=======
-* Added dropdown Network Name for input field
->>>>>>> ManushiM-patch-grayTile
-* Changed to a veritical colorbar legend
-* Debug hilighting issue for input field 
+* Fix webshim compatibility problem on Safari & iOS
+* Fix pictures in app section
