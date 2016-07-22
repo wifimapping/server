@@ -109,7 +109,7 @@
          <form class="form-inline">
              <div class="form-group">
                  <h8 for="SSID"> NETWORK NAME: </h8>
-                 <input id="ssid-search" class="form-control" type="text" ng-model='params.ssid' placeholder="Enter Network Name" list="SSIDs" name="SSID" onfocus="this.value='';">
+                 <input id="ssid-search" class="form-control" type="text" ng-model='params.ssid' placeholder="Enter Network Name" list="SSIDs" name="SSID" onfocus="this.value='';" />
                  <datalist id="SSIDs">
                     <option value="Known Open Wi-Fi">
                     <option value="attwifi">
@@ -310,6 +310,10 @@
     <!-- jQuery -->
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
 
+    <!-- Autofill Fix -->
+    <!-- jQuery -->
+    <script src="bower_components/autofill-event/src/autofill-event.js"></script>
+    
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
 
@@ -335,6 +339,7 @@
             });
             // ...
         });
+        
     </script>
     
     <!-- Webshim & Jquery bug fix -->
@@ -357,6 +362,11 @@
         };
     </script>
     
-    
+    <!-- iOS autofill compatibility fix -->
+    <script>
+        $('input').checkAndTriggerAutoFillEvent()
+    </script>
 </html>
+
+
 
