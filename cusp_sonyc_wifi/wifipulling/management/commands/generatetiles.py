@@ -12,7 +12,13 @@ class Command(BaseCommand):
             ssids = options['ssids']
         else:
             ssids =  getTopSSIDs()
+
             ssids.append('Known Open Wi-Fi')
+            ssids.append('All Wi-Fi')
+
+            for s in ['Red Hook Wifi', 'LinkNYC Free Wi-Fi']:
+                if s not in ssids:
+                    ssids.append(s)
 
         for ssid in ssids:
             generateTiles(ssid)

@@ -6,6 +6,7 @@ from ingestion.models import WifiScan
 from ingestion.models import UniqueLocations
 import simplejson as json
 from django.views.decorators.csrf import csrf_exempt
+import traceback
 
 # The ingestion API only has a single endpoint, the index.
 # calls [`populate`](#section-3) when a POST body is included in the request.
@@ -16,7 +17,10 @@ def index(request):
         if (len(request.body) <= 0):
             return HttpResponse("No Payload Received")
         response = populate(request.body)
-        return HttpResponse(response)
+        if response:
+            return HttpResponse(response)
+        else:
+            return HttpResponse(status=500)
     else:
         return HttpResponse("Hello!")
 
@@ -35,6 +39,7 @@ def populate(info):
         info = unicode(info, errors='ignore')
         scan = json.loads(info)
     except:
+        print "INVALID JSON"
         return "Invalid JSON"
 
     access_points = list()
@@ -45,8 +50,10 @@ def populate(info):
         # check that the scan array contains information and send error
 	# and send error message if it does not
         if (len(scan[mainkey]) < 1):
+            print "EMPTY JSON"
             return "Empty JSON uploaded!!!"
 
+        print "Len 1:",len(scan[mainkey])
 	# iterate through every dictionary in the scan array
         for i in range(0, len(scan[mainkey])):
 
@@ -145,9 +152,12 @@ def populate(info):
     # try to bulk create all of the WiFiScan model insertions in one database
     # connection and return "1" to Android application if successful
     try:
+        print "LEN 2:",len(access_points)
         WifiScan.objects.bulk_create(access_points)
         return "1"
 
     # if there is an error creating new entries, send error to application
     except:
-        return "Error Adding Entries to Database!"
+        print "ERROR DB!"
+        traceback.print_exc()
+        return None

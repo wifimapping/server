@@ -45,7 +45,8 @@ angular
 .controller('Ctrl', function($scope) {
     $scope.params = {
         aggregation: 'median',
-        ssid: 'Known Open Wi-Fi'
+        ssid: 'All Wi-Fi'
+        //ssid: 'nyu'
     };
 
     //var resultCache = {};
@@ -58,8 +59,9 @@ angular
     );
 
     var heatmapLayer = L.tileLayer(
-          'http://capstone.cloudapp.net/wifipulling/tile/{z}/{x}/{y}/?ssid={ssid}&agg_function={agg_function}', {
-            ssid: 'Known Open Wi-Fi',
+          'http://wifindproject.com/wifipulling/tile/{z}/{x}/{y}/?ssid={ssid}&agg_function={agg_function}', {
+            ssid: 'All Wi-Fi',
+            //ssid: 'nyu',
             agg_function: 'median',
             maxZoom: 18,
             opacity: .5
@@ -67,7 +69,7 @@ angular
         );
     
     var greyLayer1 = L.tileLayer(
-          'http://capstone.cloudapp.net/wifipulling/greyTile/{z}/{x}/{y}', {
+          'http://wifindproject.com/wifipulling/greyTile/{z}/{x}/{y}', {
             maxZoom: 18,
             opacity: .4
           }
@@ -111,7 +113,7 @@ angular
         map.addLayer(greyLayer);*/
 
         heatmapLayer = L.tileLayer(
-          'http://capstone.cloudapp.net/wifipulling/tile/{z}/{x}/{y}/?ssid={ssid}&agg_function={agg_function}', {
+          'http://wifindproject.com/wifipulling/tile/{z}/{x}/{y}/?ssid={ssid}&agg_function={agg_function}', {
             ssid: $scope.params.ssid,
             agg_function: $scope.params.aggregation,
             maxZoom: 18,

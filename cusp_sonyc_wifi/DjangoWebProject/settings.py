@@ -7,11 +7,11 @@ import password
 import PGpassword
 PROJECT_ROOT = path.dirname(path.abspath(path.dirname(__file__)))
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = (
-    'localhost',
+    'localhost', '100.64.168.104', '127.0.0.1', 'wifindproject.com'
 )
 
 ADMINS = (

@@ -54,12 +54,20 @@ def generateTiles(ssid):
     zoom_range=range(settings.ZOOM_MIN, settings.ZOOM_MAX+1)
     
     if ssid == "Known Open Wi-Fi":
-        f = WifiScan.objects.filter(ssid__in=[
+        '''f = WifiScan.objects.filter(ssid__in=[
             '#flatiron free wifi', '.freewifibysurface', '@smartfi-open', 'attwifi', 
             'bryantpark.org', 'CableWiFi', 'cablewifi', 'DowntownBrooklynWiFi_Fon', 
             'linknyc free wi-fi', 'Metrotech', 'optimumwifi', 'TWCWiFi', 'twcwifi', 
             'usp park wifi', 'xfinitywifi'
+        ])'''
+        f = WifiScan.objects.filter(ssid__in=[
+            '#flatiron free wifi', '.freewifibysurface', 
+            'bryantpark.org', 'DowntownBrooklynWiFi_Fon', 
+            'linknyc free wi-fi', 'Metrotech',
+            'usp park wifi', 'Red Hook Wifi'
         ])
+    elif ssid == "All Wi-Fi":
+        f = WifiScan.objects
     else:
         f = WifiScan.objects.filter(ssid=ssid)
 
